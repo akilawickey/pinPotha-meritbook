@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/akila/Desktop/pinpotha/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/home/akila/Desktop/pinpotha/app/build/intermediates/pre-dexed/debug/classes-4e201ad97e7ed030ff13b4b839d602f0272eb1c4.jar" />
+    </item>
+    <item
+        jar="/home/akila/newest/pinPotha/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/home/akila/newest/pinPotha/app/build/intermediates/pre-dexed/release/classes-da03fe6f6590953ae8e398f5e5b3043a51f8bf36.jar" />
+    </item>
+    <item
+        jar="/home/akila/android-sdk-linux/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="/home/akila/newest/pinPotha/app/build/intermediates/pre-dexed/release/support-annotations-23.0.1-60a26df928708365150ffe88f58598a3ce6638be.jar" />
+    </item>
+    <item
+        jar="/home/akila/newest/pinPotha/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/home/akila/newest/pinPotha/app/build/intermediates/pre-dexed/release/internal_impl-23.0.1-73dcd2889957cf4dd4db51dd19e889fe005fb953.jar" />
+    </item>
+    <item
+        jar="/home/akila/Desktop/pinpotha/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/libs/internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="/home/akila/Desktop/pinpotha/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.1-7b64bde91578900c34991a22fda2dc454fd936c7.jar" />
+    </item>
+    <item
+        jar="/home/akila/newest/pinPotha/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/home/akila/newest/pinPotha/app/build/intermediates/pre-dexed/release/classes-73c68e8be325b1e435973a2ff52757baec1bca79.jar" />
+    </item>
+    <item
+        jar="/home/akila/Desktop/pinpotha/app/build/intermediates/exploded-aar/com.android.support/design/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
+        <dex dex="/home/akila/Desktop/pinpotha/app/build/intermediates/pre-dexed/debug/classes-0f41a28e4018c6855c550a8c86721f956573ff13.jar" />
+    </item>
+    <item
+        jar="/home/akila/newest/pinPotha/app/build/intermediates/exploded-aar/com.android.support/design/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
+        <dex dex="/home/akila/newest/pinPotha/app/build/intermediates/pre-dexed/release/classes-5fab3d04cd0c164b025b6d8d7e3ec020ea748a81.jar" />
+    </item>
+    <item
+        jar="/home/akila/Desktop/pinpotha/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="/home/akila/Desktop/pinpotha/app/build/intermediates/pre-dexed/debug/classes-2e8852a1b636398917f22b5ac091ba6e318d3081.jar" />
+    </item>
+
+</items>
