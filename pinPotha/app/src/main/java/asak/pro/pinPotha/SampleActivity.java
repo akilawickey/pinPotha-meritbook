@@ -1,6 +1,7 @@
 package asak.pro.pinPotha;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,10 +30,12 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import asak.pro.ddbs.DriveSyncController;
+import asak.pro.ddbs.NewerDatabaseCallback;
 import asak.pro.pinPotha.R;
 
 public class SampleActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener ,NewerDatabaseCallback {
 
 
     android.widget.Button addImage;
@@ -41,6 +44,7 @@ public class SampleActivity extends AppCompatActivity
     private static final int CAMERA_REQUEST = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private static final int NOTE_REQUEST = 0;
+
     Time today = new Time(Time.getCurrentTimezone());
     ListView dataList;
     byte[] imageName;
@@ -57,8 +61,8 @@ public class SampleActivity extends AppCompatActivity
     private String titles[] = new String[]{"Sample Tab 1", "Sample Tab 2", "Sample Tab 3", "Sample Tab 4"
             , "Sample Tab 5", "Sample Tab 6", "Sample Tab 7", "Sample Tab 8"};
     private Toolbar toolbar;
-
-
+    private DriveSyncController mSyncController;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,6 +206,7 @@ public class SampleActivity extends AppCompatActivity
         String[] values = new String[]{
                 "Help", "About pinpotha", "Rate this App"
         };
+        SampleActivity.context = this;
 
     }
 
@@ -278,7 +283,7 @@ public class SampleActivity extends AppCompatActivity
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte imageInByte[] = stream.toByteArray();
-                    Log.e("output before conversion", imageInByte.toString());
+                    Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
                     db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
@@ -302,7 +307,7 @@ public class SampleActivity extends AppCompatActivity
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte imageInByte[] = stream.toByteArray();
-                    Log.e("output before conversion", imageInByte.toString());
+                    Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
                     db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
@@ -327,7 +332,7 @@ public class SampleActivity extends AppCompatActivity
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte imageInByte[] = stream.toByteArray();
-                    Log.e("output before conversion", imageInByte.toString());
+                    Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
                     db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
@@ -386,7 +391,7 @@ public class SampleActivity extends AppCompatActivity
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         yourImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte imageInByte[] = stream.toByteArray();
-        Log.e("output before conversion", imageInByte.toString());
+        Log.e("output beforeConversion", imageInByte.toString());
         // Inserting Contacts
         Log.d("Insert: ", "Inserting ..");
         db.addContact(new Contact(date + "\n" + et.getText().toString(), imageInByte));
@@ -469,8 +474,54 @@ public class SampleActivity extends AppCompatActivity
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
         }
 
+         else if (id == R.id.drive_sync) {
+//            Intent intent1 = new Intent(SampleActivity.this,
+//                    Main2Activity.class);
+//
+//            startActivity(intent1);
+//            finish();
+
+            mSyncController  = DriveSyncController.get(this,db,this).setDebug(true);
+            mSyncController.isDriveDbNewer();
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public void driveNewer(){
+        mSyncController.pullDbFromDrive();
+        Log.d("Drive" , "Download from drive");
+    }
+
+    public void localNewer(){
+        mSyncController.putDbInDrive();
+        Log.d("Drive" , "Upload to drive");
+    }
+
+
+    public static void alertShow(){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(SampleActivity.context);
+        builder1.setMessage("Sorry Unable to connect to the Driver");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+//        builder1.setNegativeButton(
+//                "No",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 }

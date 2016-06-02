@@ -10,6 +10,8 @@
             android:title="About us" />
         <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
             android:title="Help" />
+        <item android:id="@+id/drive_sync" android:icon="@android:drawable/ic_popup_sync"
+            android:title="Sync with Google Drive" />
     </group>
 
     <item android:title="Communicate">
