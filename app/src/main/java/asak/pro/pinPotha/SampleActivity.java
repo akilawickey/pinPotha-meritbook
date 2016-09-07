@@ -286,7 +286,6 @@ public class SampleActivity extends AppCompatActivity
 
         alert.create().show();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK)
