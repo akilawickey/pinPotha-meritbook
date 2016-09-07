@@ -1,7 +1,6 @@
 package asak.pro.pinPotha;
 
 public class Contact {
-
     // private variables
     int _id;
     String _name;

@@ -21,7 +21,6 @@ public class DisplayImageActivity extends Activity {
     Bitmap theImage;
     TextView text1;
     String imgdata;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +32,7 @@ public class DisplayImageActivity extends Activity {
          * getting intent data from search and previous screen
          */
         Intent intnt = getIntent();
-        theImage = (Bitmap) intnt.getParcelableExtra("imagename");
+        theImage = intnt.getParcelableExtra("imagename");
         imgdata = intnt.getStringExtra("imagedata");
         //text1.setText(imageId);
         imageId = intnt.getIntExtra("imageid", 20);
@@ -83,10 +82,8 @@ public class DisplayImageActivity extends Activity {
                 /**
                  * create DatabaseHandler object
                  */
-
             }
         });
-
     }
 
     @Override
@@ -96,7 +93,6 @@ public class DisplayImageActivity extends Activity {
                 SampleActivity.class);
         startActivity(i);
         finish();
-
     }
 
 }

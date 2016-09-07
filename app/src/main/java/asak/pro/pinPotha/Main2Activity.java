@@ -45,7 +45,6 @@ public class Main2Activity extends AppCompatActivity implements NewerDatabaseCal
 
     public void driveNewer() {
     }
-
     public void localNewer() {
     }
 }

@@ -417,7 +417,6 @@ public class SampleActivity extends AppCompatActivity
 //
 //        return super.onOptionsItemSelected(item);
 //    }
-
     public void addNote() {
         today.setToNow();
         String date = today.format("%Y-%m-%d %H:%M:%S");

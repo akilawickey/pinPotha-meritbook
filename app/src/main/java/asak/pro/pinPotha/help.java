@@ -21,12 +21,10 @@ public class help extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.help);
-
         text1 = (TextView) findViewById(R.id.tv);
         /**
          * getting intent data from search and previous screen
          */
-
 
     }
 

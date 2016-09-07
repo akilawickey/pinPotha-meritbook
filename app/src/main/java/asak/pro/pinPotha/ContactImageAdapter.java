@@ -15,7 +15,6 @@ import android.widget.TextView;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
-
 public class ContactImageAdapter extends ArrayAdapter<Contact> {
     Context context;
     int layoutResourceId;
@@ -55,9 +54,7 @@ public class ContactImageAdapter extends ArrayAdapter<Contact> {
         Bitmap theImage = BitmapFactory.decodeStream(imageStream);
         holder.imgIcon.setImageBitmap(theImage);
         return row;
-
     }
-
     static class ImageHolder {
         ImageView imgIcon;
         TextView txtTitle;

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 public class about extends Activity {
     android.widget.Button btnDelete;
     ImageView imageDetail;
@@ -26,10 +25,7 @@ public class about extends Activity {
         /**
          * getting intent data from search and previous screen
          */
-
-
     }
-
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
@@ -37,7 +33,6 @@ public class about extends Activity {
                 SampleActivity.class);
         startActivity(i);
         finish();
-
     }
 
 }
