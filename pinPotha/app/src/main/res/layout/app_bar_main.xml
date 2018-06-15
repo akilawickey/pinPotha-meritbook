@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
-        android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-            android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:background="#ffa805"
+            android:orientation="vertical"
 
             >
 
@@ -27,14 +33,13 @@
                 android:id="@+id/ed1"
                 android:layout_width="match_parent"
                 android:layout_height="93dp"
-                android:ems="10"
-                android:inputType="textMultiLine"
-                android:background="#ffffff"
-                android:textColor="#000000"
                 android:autoText="false"
+                android:background="#ffffff"
+                android:ems="10"
                 android:hint="please type here..."
-                android:textColorHint="#000000"
-                >
+                android:inputType="textMultiLine"
+                android:textColor="#000000"
+                android:textColorHint="#000000">
 
                 <requestFocus />
             </EditText>
@@ -43,22 +48,23 @@
                 android:id="@+id/btnAdd"
                 android:layout_width="match_parent"
                 android:layout_height="87dp"
-                android:text="Add Good Work"
                 android:background="#ec4d09"
-                android:textColor="#010001"
                 android:clickable="true"
                 android:focusable="true"
-                android:textColorHighlight="#a93e00"
-                android:hint="click to add " />
+                android:hint="click to add "
+                android:text="Add Good Work"
+                android:textColor="#010001"
+                android:textColorHighlight="#a93e00" />
 
             <ListView
                 android:id="@+id/list"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/ba2"
-                android:cacheColorHint="#00000000" >
+                android:cacheColorHint="#00000000">
 
             </ListView>
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager"
                 android:layout_width="match_parent"
@@ -80,11 +86,7 @@
         </LinearLayout>
 
 
-
     </android.support.design.widget.AppBarLayout>
-
-
-
 
 
 </android.support.design.widget.CoordinatorLayout>

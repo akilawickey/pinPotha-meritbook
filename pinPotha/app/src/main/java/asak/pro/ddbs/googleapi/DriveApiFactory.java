@@ -19,10 +19,11 @@ public abstract class DriveApiFactory {
 
     /**
      * Factory method that creates and returns a GoogleApiClient
-     * @param context the Activity Context
-     * @param connectionCallbacks the {@link GoogleApiClient.ConnectionCallbacks}
+     *
+     * @param context                  the Activity Context
+     * @param connectionCallbacks      the {@link GoogleApiClient.ConnectionCallbacks}
      * @param connectionFailedListener the {@link GoogleApiClient.OnConnectionFailedListener}
-     * @param debug whether to log debug messages
+     * @param debug                    whether to log debug messages
      * @return a fully constructed, Drive equipped GoogleApiClient
      */
     public static GoogleApiClient getClient(Context context,
@@ -35,10 +36,11 @@ public abstract class DriveApiFactory {
     /**
      * GoogleApiClient builder method. This is called by the Factory method {@link #getClient(Context, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, boolean)}.
      * That might seem redundant, but it's for future-proofing the API.
-     * @param context the Activity Context
-     * @param connectionCallbacks the {@link GoogleApiClient.ConnectionCallbacks}
+     *
+     * @param context                  the Activity Context
+     * @param connectionCallbacks      the {@link GoogleApiClient.ConnectionCallbacks}
      * @param connectionFailedListener the {@link GoogleApiClient.OnConnectionFailedListener}
-     * @param debug whether to log debug messages
+     * @param debug                    whether to log debug messages
      * @return a fully constructed, Drive equipped GoogleApiClient
      */
     private static GoogleApiClient buildDriveClient(Context context,

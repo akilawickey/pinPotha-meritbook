@@ -20,15 +20,17 @@ import com.google.android.gms.drive.Metadata;
 public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallback {
 
     /**
+     * Flag indicating to log debug messages
+     */
+    private static boolean debug;
+    /**
      * The remote DriveFile name
      */
     private String driveFileName;
-
     /**
      * The GoogleApiClient to use to access Drive
      */
     private GoogleApiClient mDriveClient;
-
     /**
      * The callback to notify with FileResults
      */
@@ -36,8 +38,9 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
 
     /**
      * Constructs a new DriveLayer object
+     *
      * @param driveClient the {@link GoogleApiClient}
-     * @param callback the {@link FileResultsReadyCallback}
+     * @param callback    the {@link FileResultsReadyCallback}
      */
     public DriveLayer(GoogleApiClient driveClient, FileResultsReadyCallback callback) {
         this.mDriveClient = driveClient;
@@ -45,12 +48,8 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
     }
 
     /**
-     * Flag indicating to log debug messages
-     */
-    private static boolean debug;
-
-    /**
      * Method to set the debug flag
+     *
      * @param debug the debug status
      * @return this, for chaining
      */
@@ -61,6 +60,7 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
 
     /**
      * Helper method that retrieves the application's AppFolder
+     *
      * @return the DriveFolder representing the AppFolder
      */
     private DriveFolder getAppFolder() {
@@ -73,6 +73,7 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
     /**
      * Helper method that asynchronously retrieves the remote DriveFile with the passed name (if it
      * exists)
+     *
      * @param driveFileName the filename to query
      */
     public void getFile(String driveFileName) {
@@ -99,6 +100,7 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
 
     /**
      * {@link QuerierResultCallback} called when a DriveFile with the queried filename is found
+     *
      * @param m the {@link Metadata} for the found DriveFile
      */
     @Override
@@ -118,6 +120,7 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
      * {@link DriveFioResultsCallback} called when a DriveFile I/O operation returns a
      * DriveContentResult. Merely passes the Result up to the {@link FileResultsReadyCallback}
      * registered in this {@link DriveLayer}.
+     *
      * @param result the DriveContentResult
      */
     @Override
@@ -133,6 +136,7 @@ public class DriveLayer implements DriveFioResultsCallback, QuerierResultCallbac
      * being created. If the result was not a success, logs that. Regardless, attempts to move
      * forward with whatever request required that the DriveFile be created be attempting to load
      * a reference to the DriveFile
+     *
      * @param result the DriveFileResult indicating the exit status of the DriveFile creation
      *               operation
      */

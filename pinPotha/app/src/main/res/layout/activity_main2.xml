@@ -10,11 +10,11 @@
     tools:context="asak.pro.pinPotha.Main2Activity">
 
     <Button
+        android:id="@+id/buttonPush"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Push"
-        android:id="@+id/buttonPush"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Push" />
 </RelativeLayout>

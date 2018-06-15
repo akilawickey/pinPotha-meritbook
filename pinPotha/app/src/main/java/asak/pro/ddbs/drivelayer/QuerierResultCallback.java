@@ -18,6 +18,7 @@ interface QuerierResultCallback {
 
     /**
      * Method called when the query returns results
+     *
      * @param m the {@link Metadata} of the result
      */
     void onQuerierResult(Metadata m);

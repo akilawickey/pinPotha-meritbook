@@ -1,66 +1,67 @@
 package asak.pro.pinPotha;
 
 public class Contact {
+    // private variables
+    int _id;
+    String _name;
+    byte[] _image;
 
-	// private variables
-	int _id;
-	String _name;
-	byte[] _image;
+    // Empty constructor
+    public Contact() {
 
-	// Empty constructor
-	public Contact() {
+    }
 
-	}
+    // constructor
+    public Contact(int keyId, String name, byte[] image) {
+        this._id = keyId;
+        this._name = name;
+        this._image = image;
 
-	// constructor
-	public Contact(int keyId, String name, byte[] image) {
-		this._id = keyId;
-		this._name = name;
-		this._image = image;
+    }
 
-	}
-	public Contact(String name, byte[] image) {
-		this._name = name;
-		this._image = image;
+    public Contact(String name, byte[] image) {
+        this._name = name;
+        this._image = image;
 
-	}
-	public Contact(String name) {
-		this._name = name;
+    }
 
-	}
+    public Contact(String name) {
+        this._name = name;
 
-	public Contact(int keyId) {
-		this._id = keyId;
+    }
 
-	}
+    public Contact(int keyId) {
+        this._id = keyId;
 
-	// getting ID
-	public int getID() {
-		return this._id;
-	}
+    }
 
-	// setting id
-	public void setID(int keyId) {
-		this._id = keyId;
-	}
+    // getting ID
+    public int getID() {
+        return this._id;
+    }
 
-	// getting name
-	public String getName() {
-		return this._name;
-	}
+    // setting id
+    public void setID(int keyId) {
+        this._id = keyId;
+    }
 
-	// setting name
-	public void setName(String name) {
-		this._name = name;
-	}
+    // getting name
+    public String getName() {
+        return this._name;
+    }
 
-	// getting phone number
-	public byte[] getImage() {
-		return this._image;
-	}
+    // setting name
+    public void setName(String name) {
+        this._name = name;
+    }
 
-	// setting phone number
-	public void setImage(byte[] image) {
-		this._image = image;
-	}
+    // getting phone number
+    public byte[] getImage() {
+        return this._image;
+    }
+
+    // setting phone number
+    public void setImage(byte[] image) {
+        this._image = image;
+    }
 }

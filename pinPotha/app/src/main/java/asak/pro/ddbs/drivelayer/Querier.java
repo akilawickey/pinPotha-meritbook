@@ -30,6 +30,7 @@ class Querier implements ResultCallback<DriveApi.MetadataBufferResult> {
 
     /**
      * Constructs a new Querier
+     *
      * @param callback the {@link QuerierResultCallback}
      */
     public Querier(QuerierResultCallback callback) {
@@ -39,9 +40,10 @@ class Querier implements ResultCallback<DriveApi.MetadataBufferResult> {
 
     /**
      * Asynchronously queries Drive within the passed params to find a DriveFile
+     *
      * @param driveClient the {@link GoogleApiClient} to use for this Drive request
-     * @param folder the {@link DriveFolder} to query within
-     * @param filename the filename to query for
+     * @param folder      the {@link DriveFolder} to query within
+     * @param filename    the filename to query for
      */
     public void findFile(GoogleApiClient driveClient, DriveFolder folder, String filename) {
         // Make filename filter
@@ -61,6 +63,7 @@ class Querier implements ResultCallback<DriveApi.MetadataBufferResult> {
      * out of the result one at a time through {@link QuerierResultCallback#onQuerierResult(Metadata)}
      * with the {@link QuerierResultCallback} registered in ths {@link Querier}. If the results are
      * null, calls {@link QuerierResultCallback#onNoQuerierResult()}
+     *
      * @param result the result of the query
      */
     @Override
