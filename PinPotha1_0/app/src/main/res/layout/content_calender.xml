@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/colorGray"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="asak.pro.pinPotha.CalenderActivity"
+    tools:showIn="@layout/app_bar_calender">
+    <EditText
+
+        android:hint="@string/label_note"
+        android:background="@android:color/white"
+        android:id="@+id/edt_note"
+        android:layout_margin="10dp"
+        android:elevation="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <Button
+        android:elevation="5dp"
+        style="@style/backTint"
+        android:textColor="@android:color/white"
+        android:layout_margin="10dp"
+        android:text="@string/add"
+        android:layout_below="@id/edt_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="13dp" />
+</RelativeLayout>

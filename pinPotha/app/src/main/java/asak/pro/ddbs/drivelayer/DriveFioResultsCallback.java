@@ -17,12 +17,14 @@ interface DriveFioResultsCallback {
     /**
      * Method called when a DriveContentsResult is returned, usually as a result of querying the
      * AppFolder for a Database DriveFile
+     *
      * @param result the DriveContentsResult indicating the request status
      */
     void onFioResult(DriveApi.DriveContentsResult result);
 
     /**
      * Method called when a DriveFile creation request finishes
+     *
      * @param result the DriveFileResult indicating the exit status of the request
      */
     void onFileCreatedResult(DriveFolder.DriveFileResult result);

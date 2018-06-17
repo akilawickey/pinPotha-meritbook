@@ -12,12 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.PopupWindow;
-
-import asak.pro.ddbs.drivelayer.DriveLayer;
-import asak.pro.ddbs.drivelayer.FileResultsReadyCallback;
-import asak.pro.ddbs.googleapi.DriveApiFactory;
-import asak.pro.pinPotha.SampleActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -35,6 +29,11 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import asak.pro.ddbs.drivelayer.DriveLayer;
+import asak.pro.ddbs.drivelayer.FileResultsReadyCallback;
+import asak.pro.ddbs.googleapi.DriveApiFactory;
+import asak.pro.pinPotha.SampleActivity;
 
 /**
  * Master controller class for all Drive/Database sync operations.
@@ -60,44 +59,42 @@ public class DriveSyncController implements FileResultsReadyCallback {
      * to determine which is newer
      */
     public static final int COMPARE = 2;
-
+    /**
+     * Flag for debug logging
+     */
+    private static boolean debug;
     /**
      * Flag indicating the current status of the request
      */
     boolean ongoingRequest = false;
-
     /**
      * Reference to the DriveLayer that provides abstracted access to the Drive AppFolder
      */
     DriveLayer mDriveLayer;
-
     /**
      * Reference to the local SQLite Database (if it exists)
      */
     File localDb;
-
     /**
      * Holds the DriveContentsResult of the Request to get the backup DriveFile. Held as a class var
      * for reusability.
      */
     DriveApi.DriveContentsResult result;
-
     /**
      * The request Queue
      */
     Queue<Integer> mRequestQueue;
-
     /**
      * Callback to inform of local/cloud newer statuses
      */
     private NewerDatabaseCallback newerStatusCallback;
-
     private GoogleApiClient mDriveClient;
 
     /**
      * Constructs a new {@link DriveSyncController}.
-     * @param context the Activity Context
-     * @param dbName the local SQLite Database name
+     *
+     * @param context             the Activity Context
+     * @param dbName              the local SQLite Database name
      * @param newerStatusCallback the callback to notify of local/cloud newer status
      */
     private DriveSyncController(final Context context, String dbName, NewerDatabaseCallback newerStatusCallback) {
@@ -174,8 +171,9 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Retrieves a {@link DriveSyncController} singleton
-     * @param context the Activity Context
-     * @param dbName the local SQLite Database name
+     *
+     * @param context             the Activity Context
+     * @param dbName              the local SQLite Database name
      * @param newerStatusCallback the callback to notify of local/cloud newer status
      * @return a {@link DriveSyncController}
      */
@@ -185,8 +183,9 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Retrieves a {@link DriveSyncController} singleton
-     * @param context the Activity Context
-     * @param dbHelper the local {@link SQLiteOpenHelper}
+     *
+     * @param context             the Activity Context
+     * @param dbHelper            the local {@link SQLiteOpenHelper}
      * @param newerStatusCallback the callback to notify of local/cloud newer status
      * @return a {@link DriveSyncController}
      */
@@ -195,12 +194,8 @@ public class DriveSyncController implements FileResultsReadyCallback {
     }
 
     /**
-     * Flag for debug logging
-     */
-    private static boolean debug;
-
-    /**
      * Sets the debug flag
+     *
      * @param debug the debug status
      * @return this, for chaining calls
      */
@@ -231,7 +226,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
             ongoingRequest = false;
             doQueue();
             return request;
-        }  else {
+        } else {
             Log.e("Controller", "Queue size 0?...");
             return -1;
         }
@@ -274,6 +269,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Performs a comparison of the local and DriveFile Database files to determine which is newer
+     *
      * @param driveDeltaDate the data of the last change to the DriveFile Database
      * @return true if the DriveFile is newer, false if the local file is newer
      */
@@ -296,6 +292,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
     /**
      * Handles received DriveFile Metadata for comparing the newer status of the local and Drive
      * copies of the Database
+     *
      * @param m the received Metadata
      */
     @Override
@@ -319,6 +316,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
     /**
      * Handles the DriveContentsResult returned from the request to get the DriveFile of the
      * Database.
+     *
      * @param result the DriveContentsResult representing the Drive copy of the Database
      */
     @Override
@@ -348,6 +346,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Helper method that returns if the DriveFile should be opened as RW or just R
+     *
      * @return the mode to open the DriveFile. True = RW, False = R.
      */
     @Override
@@ -365,7 +364,8 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Helper method to copy a file from an InputStream to an OutputStream
-     * @param in the InputStream to read from
+     *
+     * @param in  the InputStream to read from
      * @param out the OutputStream to write to
      */
     private void fileCopyHelper(InputStream in, OutputStream out) {
@@ -395,6 +395,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Helper method to write the local SQLite Database to the DriveFile in the AppFolder
+     *
      * @param outputStream the OutputStream of the DriveFile to write to
      */
     private void writeLocalDbToCloudStream(OutputStream outputStream) {
@@ -424,6 +425,7 @@ public class DriveSyncController implements FileResultsReadyCallback {
 
     /**
      * Helper method to write the DriveFile Database to the local SQLite Database file
+     *
      * @param inputStream the InputStream of the DriveFile to read data from
      */
     private void writeCloudStreamToLocalDb(InputStream inputStream) {

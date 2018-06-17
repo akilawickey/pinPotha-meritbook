@@ -1,10 +1,8 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ba2"
-    >
+    android:background="@drawable/ba2">
 
 
     <LinearLayout
@@ -14,12 +12,11 @@
         android:weightSum="1">
 
 
-
-
         <TextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.85"
             android:text="You can add good things by
 
 ,Making a Note
@@ -35,8 +32,7 @@ By recoding good things any time in your day to day life with your smart phone w
 Think about a situation you are seriously ill and you are in a very big problem.But think if you can read these good things which you have done you can clear your mind by happiness."
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#0f0000"
-            android:textSize="20dp"
-            android:layout_weight="0.85"/>
+            android:textSize="20dp" />
 
     </LinearLayout>
 

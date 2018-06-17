@@ -8,17 +8,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.text.format.Time;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -32,37 +32,59 @@ import java.util.List;
 
 import asak.pro.ddbs.DriveSyncController;
 import asak.pro.ddbs.NewerDatabaseCallback;
-import asak.pro.pinPotha.R;
 
 public class SampleActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener ,NewerDatabaseCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, NewerDatabaseCallback {
 
 
-    android.widget.Button addImage;
-    ArrayList<Contact> imageArry = new ArrayList<Contact>();
-    ContactImageAdapter imageAdapter;
     private static final int CAMERA_REQUEST = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private static final int NOTE_REQUEST = 0;
-
+    private static Context context;
+    android.widget.Button addImage;
+    ArrayList<Contact> imageArry = new ArrayList<Contact>();
+    ContactImageAdapter imageAdapter;
     Time today = new Time(Time.getCurrentTimezone());
     ListView dataList;
     byte[] imageName;
     int imageId;
     Bitmap theImage;
     DataBaseHandler db;
-    private EditText et;
     String imgdata;
+    ViewPager pager;
+    private EditText et;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle drawerToggle;
-
     private ListView mDrawerList;
-    ViewPager pager;
     private String titles[] = new String[]{"Sample Tab 1", "Sample Tab 2", "Sample Tab 3", "Sample Tab 4"
             , "Sample Tab 5", "Sample Tab 6", "Sample Tab 7", "Sample Tab 8"};
     private Toolbar toolbar;
     private DriveSyncController mSyncController;
-    private static Context context;
+
+    public static void alertShow() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(SampleActivity.context);
+        builder1.setMessage("Sorry Unable to connect to the Driver");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+//        builder1.setNegativeButton(
+//                "No",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +141,7 @@ public class SampleActivity extends AppCompatActivity
                 imageName = imageArry.get(position).getImage();
                 imageId = imageArry.get(position).getID();
                 imgdata = imageArry.get(position).getName();
-                Log.d("Before Send:****", imageName + "-" + imageId+ "-" + imgdata);
+                Log.d("Before Send:****", imageName + "-" + imageId + "-" + imgdata);
                 // convert byte to bitmap
                 ByteArrayInputStream imageStream = new ByteArrayInputStream(
                         imageName);
@@ -137,8 +159,8 @@ public class SampleActivity extends AppCompatActivity
          * open dialog for choose camera/gallery
          */
 
-        final String[] option = new String[] {"Take a Note", "Get From Camera",
-                "Get From the Phone" };
+        final String[] option = new String[]{"Take a Note", "Get From Camera",
+                "Get From the Phone"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.select_dialog_item, option);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -192,7 +214,7 @@ public class SampleActivity extends AppCompatActivity
 //        }
         pager = (ViewPager) findViewById(R.id.viewpager);
         //  slidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-       // pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), titles));
+        // pager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), titles));
 
         // slidingTabLayout.setViewPager(pager);
         //   slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
@@ -209,6 +231,11 @@ public class SampleActivity extends AppCompatActivity
         SampleActivity.context = this;
 
     }
+//    @Override
+//    public void onBackPressed() {
+//        // TODO Auto-generated method stub
+//        createDialog();
+//    }
 
     @Override
     protected void onDestroy() {
@@ -216,12 +243,13 @@ public class SampleActivity extends AppCompatActivity
         super.onDestroy();
 
     }
-//    @Override
-//    public void onBackPressed() {
-//        // TODO Auto-generated method stub
-//        createDialog();
-//    }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
@@ -232,13 +260,6 @@ public class SampleActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
 
     private void createDialog() {
         // TODO Auto-generated method stub
@@ -286,7 +307,7 @@ public class SampleActivity extends AppCompatActivity
                     Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
-                    db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
+                    db.addContact(new Contact(date + "\n" + et.getText().toString(), imageInByte));
                     Intent i = new Intent(SampleActivity.this,
                             SampleActivity.class);
                     startActivity(i);
@@ -310,7 +331,7 @@ public class SampleActivity extends AppCompatActivity
                     Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
-                    db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
+                    db.addContact(new Contact(date + "\n" + et.getText().toString(), imageInByte));
                     Intent i = new Intent(SampleActivity.this,
                             SampleActivity.class);
                     startActivity(i);
@@ -335,7 +356,7 @@ public class SampleActivity extends AppCompatActivity
                     Log.e("output beforeConversion", imageInByte.toString());
                     // Inserting Contacts
                     Log.d("Insert: ", "Inserting ..");
-                    db.addContact(new Contact(date+"\n"+et.getText().toString(), imageInByte));
+                    db.addContact(new Contact(date + "\n" + et.getText().toString(), imageInByte));
                     Intent i = new Intent(SampleActivity.this,
                             SampleActivity.class);
                     startActivity(i);
@@ -345,7 +366,6 @@ public class SampleActivity extends AppCompatActivity
                 break;
         }
     }
-
 
     /**
      * open camera method
@@ -361,7 +381,6 @@ public class SampleActivity extends AppCompatActivity
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
     }
-
 
     /**
      * open gallery method
@@ -382,6 +401,21 @@ public class SampleActivity extends AppCompatActivity
                 PICK_FROM_GALLERY);
 
     }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
     public void addNote() {
         today.setToNow();
         String date = today.format("%Y-%m-%d %H:%M:%S");
@@ -427,21 +461,6 @@ public class SampleActivity extends AppCompatActivity
 
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -470,18 +489,16 @@ public class SampleActivity extends AppCompatActivity
 
 
         } else if (id == R.id.nav_send) {
-            String str ="https://play.google.com/store/apps/details?id=asak.pro.pinPotha";
+            String str = "https://play.google.com/store/apps/details?id=asak.pro.pinPotha";
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(str)));
-        }
-
-         else if (id == R.id.drive_sync) {
+        } else if (id == R.id.drive_sync) {
 //            Intent intent1 = new Intent(SampleActivity.this,
 //                    Main2Activity.class);
 //
 //            startActivity(intent1);
 //            finish();
 
-            mSyncController  = DriveSyncController.get(this,db,this).setDebug(true);
+            mSyncController = DriveSyncController.get(this, db, this).setDebug(true);
             mSyncController.isDriveDbNewer();
         }
 
@@ -489,39 +506,14 @@ public class SampleActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public void driveNewer(){
+
+    public void driveNewer() {
         mSyncController.pullDbFromDrive();
-        Log.d("Drive" , "Download from drive");
+        Log.d("Drive", "Download from drive");
     }
 
-    public void localNewer(){
+    public void localNewer() {
         mSyncController.putDbInDrive();
-        Log.d("Drive" , "Upload to drive");
-    }
-
-
-    public static void alertShow(){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(SampleActivity.context);
-        builder1.setMessage("Sorry Unable to connect to the Driver");
-        builder1.setCancelable(true);
-
-        builder1.setPositiveButton(
-                "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-//        builder1.setNegativeButton(
-//                "No",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        dialog.cancel();
-//                    }
-//                });
-
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+        Log.d("Drive", "Upload to drive");
     }
 }

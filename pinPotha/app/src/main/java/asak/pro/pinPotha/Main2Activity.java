@@ -1,14 +1,14 @@
 package asak.pro.pinPotha;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import asak.pro.ddbs.DriveSyncController;
 import asak.pro.ddbs.NewerDatabaseCallback;
 
-public class Main2Activity extends AppCompatActivity implements NewerDatabaseCallback{
+public class Main2Activity extends AppCompatActivity implements NewerDatabaseCallback {
 
     private DataBaseHandler mDbHelper;
 
@@ -18,6 +18,7 @@ public class Main2Activity extends AppCompatActivity implements NewerDatabaseCal
      */
     private DriveSyncController mSyncController;
     private Button buttonPush;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +26,10 @@ public class Main2Activity extends AppCompatActivity implements NewerDatabaseCal
         mDbHelper = new DataBaseHandler(this);
 
         // Init the ddbs DriveSyncController
-        mSyncController = DriveSyncController.get(this,mDbHelper,null).setDebug(true);
+        mSyncController = DriveSyncController.get(this, mDbHelper, null).setDebug(true);
 
         setContentView(R.layout.activity_main2);
-        buttonPush = (Button)findViewById(R.id.buttonPush);
+        buttonPush = (Button) findViewById(R.id.buttonPush);
 
         buttonPush.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,11 +38,13 @@ public class Main2Activity extends AppCompatActivity implements NewerDatabaseCal
             }
         });
     }
+
     public void pushLocal() {
         mSyncController.putDbInDrive();
     }
 
-    public void driveNewer(){}
-
-    public void localNewer(){}
+    public void driveNewer() {
+    }
+    public void localNewer() {
+    }
 }
