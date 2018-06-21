@@ -15,10 +15,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CalendarView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CalenderActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private CompactCalendarView calendarView;
+    private TextView txtMonth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +41,7 @@ public class CalenderActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         setTitle(getString(R.string.app_name));
-        CalendarView cv=findViewById(R.id.calendarView);
-        cv.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                Log.e("tag",""+i2);
-            }
-        });
+        setUpCalendar();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -41,7 +49,31 @@ public class CalenderActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        CircleImageView proImage=navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        TextView txtName=navigationView.getHeaderView(0).findViewById(R.id.txt_name);
+        TextView txtEmail=navigationView.getHeaderView(0).findViewById(R.id.txt_email);
+        Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(proImage);
+        txtName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        txtEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void setUpCalendar() {
+        calendarView=findViewById(R.id.compactcalendar_view);
+        txtMonth=findViewById(R.id.txt_month);
+        Date currentDate=new Date(Calendar.getInstance().getTimeInMillis());
+        txtMonth.setText(formateDate(currentDate));
+        calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+                txtMonth.setText(formateDate(firstDayOfNewMonth));
+            }
+        });
     }
 
     @Override
@@ -54,27 +86,6 @@ public class CalenderActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.calender, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -99,5 +110,10 @@ public class CalenderActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public String formateDate(Date date) {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMM-yyyy");
+        return simpleDateFormat.format(date);
     }
 }
