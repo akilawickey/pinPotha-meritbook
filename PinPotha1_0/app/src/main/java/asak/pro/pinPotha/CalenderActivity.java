@@ -33,6 +33,7 @@ public class CalenderActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private CompactCalendarView calendarView;
     private TextView txtMonth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +87,6 @@ public class CalenderActivity extends AppCompatActivity
         }
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -116,4 +116,5 @@ public class CalenderActivity extends AppCompatActivity
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMM-yyyy");
         return simpleDateFormat.format(date);
     }
+
 }
