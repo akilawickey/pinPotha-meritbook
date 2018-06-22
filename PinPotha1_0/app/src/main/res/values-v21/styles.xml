@@ -6,7 +6,4 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="backTint"  parent="Base.TextAppearance.AppCompat.Button">
-        <item name="android:backgroundTint">@color/colorAccent</item>
-    </style>
 </resources>
