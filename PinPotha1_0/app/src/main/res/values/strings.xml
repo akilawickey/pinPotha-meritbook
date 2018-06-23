@@ -11,4 +11,8 @@
     <string name="add">Add</string>
     <string name="label_note">Create Note</string>
     <string name="month">Month</string>
+    <string name="something_went_wrong">Something Went Wrong</string>
+    <string name="posted_successfully">Posted Successfully</string>
+    <string name="not_posted">Not Posted Even</string>
+    <string name="please_type_good_work">Please Type Some Good Work</string>
 </resources>
