@@ -1,4 +1,4 @@
-package asak.pro.pinPotha;
+package asak.pro.pinPotha.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -23,6 +23,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import asak.pro.pinPotha.R;
 
 public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private FirebaseAuth mFirebaseAuth;
