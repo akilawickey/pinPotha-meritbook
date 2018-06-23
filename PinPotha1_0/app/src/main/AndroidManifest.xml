@@ -26,11 +26,14 @@
             android:name=".activities.CalenderActivity"
             android:label="@string/title_activity_calender"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.PostListActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.CalenderActivity" />
         <activity android:name=".activities.DetailsActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.PostListActivity"></activity>
     </application>
 
