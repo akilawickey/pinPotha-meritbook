@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "asak.pro.pinPotha"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 1
