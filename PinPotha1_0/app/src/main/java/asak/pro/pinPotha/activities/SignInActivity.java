@@ -27,6 +27,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import asak.pro.pinPotha.R;
 
 public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
     private FirebaseAuth mFirebaseAuth;
     public static final int RC_GOOGLE_LOGIN = 1;
     public GoogleSignInAccount mGoogleAccount;
