@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:background="@color/colorGray"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -12,7 +13,8 @@
     <EditText
         android:id="@+id/edt_note"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
         android:lines="5"
         android:gravity="top"
         android:padding="5dp"
@@ -29,7 +31,8 @@
         android:text="@string/add"
         android:layout_below="@id/edt_note"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
         android:id="@+id/btn_add" />
     <TextView
         android:id="@+id/txt_month"
@@ -39,15 +42,18 @@
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:layout_above="@id/compactcalendar_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"/>
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/compactcalendar_view"
         android:layout_width="fill_parent"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
-        android:layout_height="250dp"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         app:compactCalendarTargetHeight="250dp"
         android:layout_alignParentBottom="true"
         app:compactCalendarTextSize="12sp"
@@ -57,4 +63,4 @@
         app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
         app:compactCalendarMultiEventIndicatorColor="#fff"
         />
-</RelativeLayout>
+</LinearLayout>
