@@ -1,0 +1,8 @@
+title: Pinpotha
+description: This android app is to remind good things which you have done in your life.Later your mind will be happy after reading those good things which you have done.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-leap-day
+
+gems:
+  - jekyll-mentions
