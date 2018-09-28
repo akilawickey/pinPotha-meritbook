@@ -132,9 +132,9 @@ public class PostListActivity extends AppCompatActivity {
 
 
                     if (edtNote.getText().toString().trim().length() > 0) {
-                        mUtils.addNote(mProgressDialog,edtNote);
+                        mUtils.addNote(mProgressDialog,edtNote,true);
                     } else {
-                        /*AlertDialog alert = new AlertDialog.Builder(CalenderActivity.this).create();
+                        /*AlertDialog alert = new AlertDialog.Builder(DashboardActivity.this).create();
                         alert.setMessage("Please Type Some good work !!!");
                         alert.show();*/
                         edtNote.setError(getString(R.string.please_type_good_work));
@@ -163,7 +163,7 @@ public class PostListActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case CAMERA_REQUEST:
-                mUtils.postWithPhoto(null,edtNote,mProgressDialog,data);
+                mUtils.postWithPhoto(null,edtNote,mProgressDialog,data,true);
                 break;
 
             case PICK_FROM_GALLERY:
@@ -172,7 +172,7 @@ public class PostListActivity extends AppCompatActivity {
                     final Bitmap selectedImage;
                     try {
                         selectedImage = mUtils.decodeUri(this,extras2,100);
-                        mUtils.postWithPhoto(selectedImage,edtNote,mProgressDialog,null);
+                        mUtils.postWithPhoto(selectedImage,edtNote,mProgressDialog,null,true);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }

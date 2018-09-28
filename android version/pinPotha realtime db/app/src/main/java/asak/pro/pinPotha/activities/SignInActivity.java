@@ -152,7 +152,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
      * After successfully authenticated with firebase for details provided from selected google account
      * */
     public void onSuccessfullAuthentication() {
-       Intent intent=new Intent(this,CalenderActivity.class);
+       Intent intent=new Intent(this,DashboardActivity.class);
        startActivity(intent);
        finish();
     }

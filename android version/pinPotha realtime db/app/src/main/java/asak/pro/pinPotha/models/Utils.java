@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import asak.pro.pinPotha.R;
+import asak.pro.pinPotha.activities.DashboardActivity;
 
 /**
  * Created by ZarSaeed on 6/24/2018.
@@ -58,7 +59,7 @@ public class Utils {
 
     }
 
-    public void postWithPhoto(Bitmap data, final EditText edtNote, final ProgressDialog mProgressDialog,Intent intentData) {
+    public void postWithPhoto(Bitmap data, final EditText edtNote, final ProgressDialog mProgressDialog, Intent intentData, final boolean isFromAdd) {
         Bundle extras=null;
         if (intentData!=null) extras=intentData.getExtras();
         if (data != null || extras!=null) {
@@ -83,7 +84,7 @@ public class Utils {
                     else timeStamp.put("server_time",ServerValue.TIMESTAMP);
                     post.setTimeStamp(timeStamp);
                     post.setPhotoUrl(downloadUrl);
-                    if (!edtNote.getText().toString().equals("")) {
+                    if (edtNote != null && !edtNote.getText().toString().equals("")) {
                         post.setNote(edtNote.getText().toString());
                         InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(edtNote.getWindowToken(), 0);
@@ -96,6 +97,12 @@ public class Utils {
                     reference1.setValue(post);
                     mProgressDialog.dismiss();
                     showToastMessage(mActivity.getString(R.string.posted_successfully));
+                    if (isFromAdd) {
+                        Intent intent = new Intent(mActivity, DashboardActivity.class);
+                        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mActivity.startActivity(intent);
+                        mActivity.finish();
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -149,7 +156,7 @@ public class Utils {
 
     }
 
-    public void addNote(final ProgressDialog mProgressDialog, final EditText edtNote) {
+    public void addNote(final ProgressDialog mProgressDialog, final EditText edtNote, final boolean isFromAdd) {
         mProgressDialog.show();
         String date="";
         if (millis!=null)date = formatDate(new Date(Long.parseLong(millis)),"dd-MM-yyyy");
@@ -173,6 +180,12 @@ public class Utils {
                 InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edtNote.getWindowToken(), 0);
                 edtNote.setText("");
+                if (isFromAdd) {
+                    Intent intent = new Intent(mActivity, DashboardActivity.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    mActivity.startActivity(intent);
+                   mActivity.finish();
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

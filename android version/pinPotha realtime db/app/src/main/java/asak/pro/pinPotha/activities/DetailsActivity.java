@@ -40,6 +40,7 @@ public class DetailsActivity extends AppCompatActivity {
         View view=findViewById(R.id.l);
         post= (Post) getIntent().getSerializableExtra("POST");
         date=new Date(Long.parseLong(post.getTimeStamp().get("server_time").toString()));
+        setTitle(formatDate(date,"dd-MM-yyyy"));
         postImage=findViewById(R.id.post_img);
         TextView noteTxt=findViewById(R.id.txt_note);
         if (post.getPhotoUrl()!=null) {

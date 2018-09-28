@@ -12,15 +12,19 @@ import android.view.View;
 
 public class CustomRecyclerView extends RecyclerView {
     private View mEmptyView;
+
     public CustomRecyclerView(Context context) {
         super(context);
     }
+
     public CustomRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
+
     public CustomRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
     private void initEmptyView() {
         if (mEmptyView != null) {
             mEmptyView.setVisibility(
@@ -29,6 +33,7 @@ public class CustomRecyclerView extends RecyclerView {
                     getAdapter() == null || getAdapter().getItemCount() == 0 ? GONE : VISIBLE);
         }
     }
+
     final AdapterDataObserver observer = new AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -46,6 +51,7 @@ public class CustomRecyclerView extends RecyclerView {
             initEmptyView();
         }
     };
+
     @Override
     public void setAdapter(Adapter adapter) {
         Adapter oldAdapter = getAdapter();
@@ -57,6 +63,7 @@ public class CustomRecyclerView extends RecyclerView {
             adapter.registerAdapterDataObserver(observer);
         }
     }
+
     public void setEmptyView(View view) {
         this.mEmptyView = view;
         initEmptyView();

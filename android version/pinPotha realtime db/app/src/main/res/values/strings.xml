@@ -15,4 +15,5 @@
     <string name="posted_successfully">Posted Successfully</string>
     <string name="not_posted">Not Posted Even</string>
     <string name="please_type_good_work">Please Type Some Good Work</string>
+    <string name="label_search_by_note">Search By Note</string>
 </resources>
