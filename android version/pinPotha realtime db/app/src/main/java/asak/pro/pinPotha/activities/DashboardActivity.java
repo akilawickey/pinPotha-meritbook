@@ -100,8 +100,10 @@ public class DashboardActivity extends AppCompatActivity
         floatingActionButton = findViewById(R.id.fab);
         progressBar.setVisibility(View.VISIBLE);
         postList = new ArrayList<>();
+
         query = FirebaseDatabase.getInstance().getReference().child("posts")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+        query.keepSynced(true);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

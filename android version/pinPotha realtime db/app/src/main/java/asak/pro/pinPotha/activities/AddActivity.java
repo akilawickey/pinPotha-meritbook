@@ -108,6 +108,7 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
     public void getAllPostsTimes() {
         final DatabaseReference allPostsRef= FirebaseDatabase.getInstance().getReference().child("posts")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+        allPostsRef.keepSynced(true);
         ValueEventListener listener=new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -92,6 +92,7 @@ public class PostListActivity extends AppCompatActivity {
                 .child("posts")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","))
                 .child(mUtils.formatDate(new Date(Long.parseLong(date)),"dd-MM-yyyy"));
+        reference.keepSynced(true);
         adapter=new PostsAdapter(Post.class,R.layout.post_list_item,PostsViewHolder.class,reference);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

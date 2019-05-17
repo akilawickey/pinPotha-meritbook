@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@color/colorGray"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="asak.pro.pinPotha.activities.DashboardActivity"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start"
     >
 
     <EditText
@@ -63,4 +66,4 @@
         app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
         app:compactCalendarMultiEventIndicatorColor="#fff"
         />
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

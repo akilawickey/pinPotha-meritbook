@@ -92,6 +92,7 @@ public class Utils {
                     }
                     DatabaseReference refData= FirebaseDatabase.getInstance().getReference().child("posts")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")).child(finalDate);
+                    refData.keepSynced(true);
                     DatabaseReference reference1=refData.push();
                     post.setPostId(reference1.getKey());
                     reference1.setValue(post);
