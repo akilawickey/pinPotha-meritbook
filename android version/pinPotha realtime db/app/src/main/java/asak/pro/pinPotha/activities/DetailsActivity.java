@@ -93,6 +93,7 @@ public class DetailsActivity extends AppCompatActivity {
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","))
                                 .child(formatDate(date,"dd-MM-yyyy"))
                                 .child(post.getPostId());
+                        reference.keepSynced(true);
                         reference.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

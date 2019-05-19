@@ -36,7 +36,12 @@
             android:name=".activities.DetailsActivity"
             android:parentActivityName=".activities.PostListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.AddActivity"></activity>
+        <activity
+            android:name=".activities.AddActivity"
+            android:label="@string/title_activity_calender"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustNothing" />
     </application>
 
 </manifest>

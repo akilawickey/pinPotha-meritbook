@@ -59,7 +59,7 @@ import asak.pro.pinPotha.models.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DashboardActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
+        implements GoogleApiClient.OnConnectionFailedListener {
     private CompactCalendarView calendarView;
     private TextView txtMonth;
     private EditText edtNote;
@@ -100,8 +100,10 @@ public class DashboardActivity extends AppCompatActivity
         floatingActionButton = findViewById(R.id.fab);
         progressBar.setVisibility(View.VISIBLE);
         postList = new ArrayList<>();
+
         query = FirebaseDatabase.getInstance().getReference().child("posts")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+        query.keepSynced(true);
         listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -141,11 +143,11 @@ public class DashboardActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+//        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
 
         NavigationView navigationView =findViewById(R.id.nav_view);
         CircleImageView proImage=navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -154,7 +156,7 @@ public class DashboardActivity extends AppCompatActivity
         Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(proImage);
         txtName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         txtEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-        navigationView.setNavigationItemSelectedListener(this);
+//        navigationView.setNavigationItemSelectedListener(this);
 
         edtSearchNote.addTextChangedListener(new TextWatcher() {
             @Override
@@ -271,28 +273,28 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item){
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            isCameraOption=true;
-            cameraPermissionCheck();
-        } else if (id == R.id.nav_gallery) {
-            isCameraOption=false;
-            cameraPermissionCheck();
-        } else if (id == R.id.nav_sign_out) {
-            FirebaseAuth.getInstance().signOut();
-            if (mGoogleApiClient!=null) Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-            Intent i = new Intent(this,SignInActivity.class);
-            startActivity(i);
-            finish();
-        }
-
-        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item){
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_camera) {
+//            isCameraOption=true;
+//            cameraPermissionCheck();
+//        } else if (id == R.id.nav_gallery) {
+//            isCameraOption=false;
+//            cameraPermissionCheck();
+//        } else if (id == R.id.nav_sign_out) {
+//            FirebaseAuth.getInstance().signOut();
+//            if (mGoogleApiClient!=null) Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+//            Intent i = new Intent(this,SignInActivity.class);
+//            startActivity(i);
+//            finish();
+//        }
+//
+//        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
     public void showPostsDialog() {
         final String[] option = new String[]{"Take a Note", "Get From Camera",
