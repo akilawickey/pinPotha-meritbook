@@ -1,69 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@color/colorGray"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="asak.pro.pinPotha.activities.DashboardActivity"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start"
+    tools:context="asak.pro.pinPotha.activities.AddActivity"
+    tools:showIn="@layout/app_bar_home"
     >
 
     <EditText
         android:id="@+id/edt_note"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:lines="5"
-        android:gravity="top"
-        android:padding="5dp"
+        android:layout_height="1dp"
         android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:layout_weight="1.3"
         android:background="@drawable/round_button"
         android:elevation="5dp"
-        android:layout_margin="10dp"
-        android:hint="@string/label_note" />
+        android:gravity="top"
+        android:hint="@string/label_note"
+        android:lines="3"
+        android:padding="3dp" />
+
     <Button
-        android:elevation="5dp"
+        android:id="@+id/btn_add"
         style="@style/ButtonCustome"
-        android:textColor="@android:color/white"
-        android:layout_margin="10dp"
-        android:text="@string/add"
-        android:layout_below="@id/edt_note"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6"
-        android:id="@+id/btn_add" />
+        android:layout_below="@id/edt_note"
+        android:layout_margin="6dp"
+        android:layout_weight="0.8"
+        android:elevation="5dp"
+        android:text="@string/add"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/btn_search"
+        style="@style/ButtonCustome"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/edt_note"
+        android:layout_margin="6dp"
+        android:layout_weight="0.8"
+        android:elevation="5dp"
+        android:text="@string/search"
+        android:textColor="@android:color/white" />
+
     <TextView
         android:id="@+id/txt_month"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/month"
-        android:textSize="@dimen/size_18"
-        android:layout_marginBottom="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@id/compactcalendar_view"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="0dp"
-        android:layout_weight="0.5"/>
-    <com.github.sundeepk.compactcalendarview.CompactCalendarView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_above="@id/compactcalendar_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.5"
+        android:gravity="center"
+        android:text="@string/month"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/size_18" />
+
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/compactcalendar_view"
         android:layout_width="fill_parent"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        app:compactCalendarTargetHeight="250dp"
         android:layout_alignParentBottom="true"
-        app:compactCalendarTextSize="12sp"
-        app:compactCalendarBackgroundColor="@color/calenderBackground"
-        app:compactCalendarTextColor="#fff"
-        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/calendarSelectedDay"
+        android:layout_weight="4"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:compactCalendarBackgroundColor="#FAEAC5"
         app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
-        app:compactCalendarMultiEventIndicatorColor="#fff"
-        />
-</android.support.v4.widget.DrawerLayout>
+        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/calendarSelectedDay"
+        app:compactCalendarMultiEventIndicatorColor="#A52A2A"
+        app:compactCalendarTargetHeight="290dp"
+        app:compactCalendarTextColor="#000000"
+        app:compactCalendarTextSize="20sp" />
+</LinearLayout>

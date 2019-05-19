@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import asak.pro.pinPotha.R;
+import asak.pro.pinPotha.activities.AddActivity;
 import asak.pro.pinPotha.activities.DashboardActivity;
 
 /**
@@ -182,7 +183,7 @@ public class Utils {
                 imm.hideSoftInputFromWindow(edtNote.getWindowToken(), 0);
                 edtNote.setText("");
                 if (isFromAdd) {
-                    Intent intent = new Intent(mActivity, DashboardActivity.class);
+                    Intent intent = new Intent(mActivity, AddActivity.class);
                     intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
                     mActivity.startActivity(intent);
                    mActivity.finish();

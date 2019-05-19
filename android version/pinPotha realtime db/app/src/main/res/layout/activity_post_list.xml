@@ -49,7 +49,7 @@
         android:id="@+id/empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Event Found"
+        android:text="No good works found"
         android:textSize="20sp" />
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

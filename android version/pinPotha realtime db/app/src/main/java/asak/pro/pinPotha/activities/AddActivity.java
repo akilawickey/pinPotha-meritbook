@@ -8,16 +8,24 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -42,7 +50,8 @@ import asak.pro.pinPotha.R;
 import asak.pro.pinPotha.models.Post;
 import asak.pro.pinPotha.models.Utils;
 
-public class AddActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class AddActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
 
     private CompactCalendarView calendarView;
     private TextView txtMonth;
@@ -55,14 +64,20 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
     boolean isCameraOption=true;
     protected GoogleApiClient mGoogleApiClient;
     private Utils mUtils;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
+        setContentView(R.layout.home);
+        Toolbar toolbar =findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         mUtils=new Utils(this,null);
         edtNote=findViewById(R.id.edt_note);
         Button btnAdd=findViewById(R.id.btn_add);
+        Button btnSearch=findViewById(R.id.btn_search);
+
         mProgressDialog =new ProgressDialog(this);
         mProgressDialog.setTitle("Loading...");
         mProgressDialog.setMessage("Posting.....");
@@ -72,7 +87,26 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
                 showPostsDialog();
             }
         });
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
+
+            }
+        });
+
         setTitle(getString(R.string.app_name));
+
+        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView =findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         setUpCalendar();
         getAllPostsTimes();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -256,5 +290,28 @@ public class AddActivity extends AppCompatActivity implements GoogleApiClient.On
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            isCameraOption=true;
+            cameraPermissionCheck();
+        } else if (id == R.id.nav_gallery) {
+            isCameraOption=false;
+            cameraPermissionCheck();
+        } else if (id == R.id.nav_sign_out) {
+            FirebaseAuth.getInstance().signOut();
+            if (mGoogleApiClient!=null) Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+            Intent i = new Intent(this,SignInActivity.class);
+            startActivity(i);
+            finish();
+        }
+
+        DrawerLayout drawer =findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
