@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -55,8 +54,7 @@ import asak.pro.pinPotha.models.Post;
 import asak.pro.pinPotha.models.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class DashboardActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener {
+public class DashboardActivity extends AppCompatActivity {
     private CompactCalendarView calendarView;
     private TextView txtMonth;
     private EditText edtNote;
@@ -67,7 +65,6 @@ public class DashboardActivity extends AppCompatActivity
     private static final int MY_PERMISSIONS_REQUEST_READ_CAMERA = 3;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTENT = 4 ;
     boolean isCameraOption=true;
-    protected GoogleApiClient mGoogleApiClient;
     private Utils mUtils;
     private TextView txtEmpty;
     private ProgressBar progressBar;
@@ -140,11 +137,6 @@ public class DashboardActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-//        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
 
         NavigationView navigationView =findViewById(R.id.nav_view);
         CircleImageView proImage=navigationView.getHeaderView(0).findViewById(R.id.imageView);
@@ -153,7 +145,6 @@ public class DashboardActivity extends AppCompatActivity
         Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()).into(proImage);
         txtName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         txtEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-//        navigationView.setNavigationItemSelectedListener(this);
 
         edtSearchNote.addTextChangedListener(new TextWatcher() {
             @Override
@@ -270,29 +261,6 @@ public class DashboardActivity extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public boolean onNavigationItemSelected(MenuItem item){
-//        int id = item.getItemId();
-//
-//        if (id == R.id.nav_camera) {
-//            isCameraOption=true;
-//            cameraPermissionCheck();
-//        } else if (id == R.id.nav_gallery) {
-//            isCameraOption=false;
-//            cameraPermissionCheck();
-//        } else if (id == R.id.nav_sign_out) {
-//            FirebaseAuth.getInstance().signOut();
-//            if (mGoogleApiClient!=null) Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-//            Intent i = new Intent(this,SignInActivity.class);
-//            startActivity(i);
-//            finish();
-//        }
-//
-//        DrawerLayout drawer =findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
-
     public void showPostsDialog() {
         final String[] option = new String[]{"Take a Note", "Get From Camera",
                 "Get From the Phone"};
@@ -387,6 +355,7 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_CAMERA: {
                 if (grantResults.length > 0
@@ -398,20 +367,12 @@ public class DashboardActivity extends AppCompatActivity
 
             }
             case MY_PERMISSIONS_REQUEST_READ_CONTENT: {
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (isCameraOption)mUtils.callCamera();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (isCameraOption) mUtils.callCamera();
                     else mUtils.callGallery();
                 }
                 break;
             }
         }
-
     }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-
 }
