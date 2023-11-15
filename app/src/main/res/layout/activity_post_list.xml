@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/colorGray"
+    tools:context="asak.pro.pinPotha.activities.PostListActivity">
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/r"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/edt_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="4"
+            android:gravity="top"
+            android:padding="5dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/round_button"
+            android:elevation="5dp"
+            android:layout_margin="10dp"
+            android:hint="@string/label_note" />
+        <Button
+            android:elevation="5dp"
+            style="@style/ButtonCustome"
+            android:textColor="@android:color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+
+            android:text="@string/add"
+            android:layout_below="@id/edt_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_add" />
+    </RelativeLayout>
+    <asak.pro.pinPotha.adapters.CustomRecyclerView
+        android:layout_marginTop="5dp"
+        android:id="@+id/recycler_view"
+        android:layout_below="@id/r"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></asak.pro.pinPotha.adapters.CustomRecyclerView>
+    <TextView
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No good works found"
+        android:textSize="20sp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frameLayout"
+    android:layout_marginTop="7dp"
+    >
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_element"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardUseCompatPadding="false"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_height="100dp"
+        xmlns:app="http://schemas.android.com/tools"
+        app:cardElevation="15dp"
+        app:cardMaxElevation="15dp">
+
+        <RelativeLayout
+            android:id="@+id/back_rel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/post_image"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/picture"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius_bottom_left="0dp"
+                app:riv_corner_radius_bottom_right="0dp"
+                app:riv_corner_radius_top_left="5dp"
+                app:riv_corner_radius_top_right="5dp"
+                />
+                <TextView
+                    android:layout_toRightOf="@id/post_image"
+                    android:id="@+id/txt_note"
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Only photo"
+                    android:textSize="@dimen/sub_heading_20"
+                    />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>
