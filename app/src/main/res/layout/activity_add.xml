@@ -7,7 +7,7 @@
     android:background="@color/colorGray"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="asak.pro.pinPotha.activities.AddActivity"
+    tools:context=".activities.AddActivity"
     tools:showIn="@layout/app_bar_home"
     >
 
