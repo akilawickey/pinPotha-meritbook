@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/colorGray"
-    tools:context="asak.pro.pinPotha.activities.PostListActivity">
+    tools:context=".activities.PostListActivity">
     <RelativeLayout
         android:visibility="gone"
         android:id="@+id/r"
@@ -37,12 +37,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/btn_add" />
     </RelativeLayout>
-    <asak.pro.pinPotha.adapters.CustomRecyclerView
+    <org.leafylanka.pinpotha.adapters.CustomRecyclerView
         android:layout_marginTop="5dp"
         android:id="@+id/recycler_view"
         android:layout_below="@id/r"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></asak.pro.pinPotha.adapters.CustomRecyclerView>
+        android:layout_height="match_parent"></org.leafylanka.pinpotha.adapters.CustomRecyclerView>
     <TextView
         android:visibility="gone"
         android:layout_centerInParent="true"
