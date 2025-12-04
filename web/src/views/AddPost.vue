@@ -9,7 +9,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 class="text-xl font-semibold text-brand-dark">Add Good Thought</h1>
+          <h1 class="text-xl font-semibold text-brand-dark">{{ isEditMode ? 'Edit Good Thought' : 'Add Good Thought' }}</h1>
           <div class="w-10"></div>
         </div>
       </div>
@@ -93,8 +93,8 @@
           :disabled="loading || (!note.trim() && !selectedFile)"
           class="w-full bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
         >
-          <span v-if="loading">Posting...</span>
-          <span v-else>Post Good Thought</span>
+          <span v-if="loading">{{ isEditMode ? 'Updating...' : 'Posting...' }}</span>
+          <span v-else>{{ isEditMode ? 'Update Good Thought' : 'Post Good Thought' }}</span>
         </button>
 
         <p v-if="error" class="mt-4 text-red-600 text-sm text-center">{{ error }}</p>
@@ -107,7 +107,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { createPost, uploadImage } from '../utils/postUtils'
+import { createPost, uploadImage, updatePost, getAllPosts } from '../utils/postUtils'
+import { trackPostCreated, trackPostUpdated, trackImageUploaded } from '../utils/analytics'
 
 const router = useRouter()
 const route = useRoute()
@@ -120,15 +121,63 @@ const selectedDate = ref(new Date().toISOString().split('T')[0])
 const loading = ref(false)
 const error = ref('')
 const fileInput = ref(null)
+const isEditMode = ref(false)
+const editingPostId = ref(null)
+const existingPhotoUrl = ref(null)
+const originalPostDate = ref(null)
 
-onMounted(() => {
-  // If date query parameter exists, use it
-  if (route.query.date) {
+onMounted(async () => {
+  // Check if we're in edit mode
+  if (route.query.edit === 'true' && route.query.postId && route.query.date) {
+    isEditMode.value = true
+    editingPostId.value = route.query.postId
+    
+    // Set the date
+    const dateMillis = parseInt(route.query.date)
+    const date = new Date(dateMillis)
+    selectedDate.value = date.toISOString().split('T')[0]
+    originalPostDate.value = date
+    
+    // Load existing post data
+    await loadPostData()
+  } else if (route.query.date) {
+    // Just setting date for new post
     const dateMillis = parseInt(route.query.date)
     const date = new Date(dateMillis)
     selectedDate.value = date.toISOString().split('T')[0]
   }
 })
+
+const loadPostData = async () => {
+  if (!authStore.user || !editingPostId.value) return
+  
+  try {
+    loading.value = true
+    
+    // Get all posts and find the one we're editing
+    return new Promise((resolve) => {
+      const unsubscribe = getAllPosts(authStore.user.email, (posts) => {
+        const postToEdit = posts.find(p => p.postId === editingPostId.value)
+        
+        if (postToEdit) {
+          note.value = postToEdit.note || ''
+          if (postToEdit.photoUrl) {
+            existingPhotoUrl.value = postToEdit.photoUrl
+            imagePreview.value = postToEdit.photoUrl
+          }
+        }
+        
+        if (unsubscribe) unsubscribe()
+        resolve()
+      })
+    })
+  } catch (err) {
+    console.error('Error loading post data:', err)
+    error.value = 'Failed to load post data'
+  } finally {
+    loading.value = false
+  }
+}
 
 const handleImageSelect = (event) => {
   const file = event.target.files[0]
@@ -145,6 +194,7 @@ const handleImageSelect = (event) => {
 const removeImage = () => {
   selectedFile.value = null
   imagePreview.value = null
+  existingPhotoUrl.value = null
   if (fileInput.value) {
     fileInput.value.value = ''
   }
@@ -159,7 +209,7 @@ const openCamera = () => {
 }
 
 const handleSubmit = async () => {
-  if (!note.value.trim() && !selectedFile.value) {
+  if (!note.value.trim() && !selectedFile.value && !existingPhotoUrl.value) {
     error.value = 'Please add a note or photo'
     return
   }
@@ -172,33 +222,63 @@ const handleSubmit = async () => {
       note: note.value.trim() || null
     }
 
-    // Upload image if selected
+    // Handle image: upload new one if selected, or keep existing if no new file
     if (selectedFile.value) {
+      // New image selected - upload it
       const imageUrl = await uploadImage(selectedFile.value)
       postData.photoUrl = imageUrl
+      trackImageUploaded()
+    } else if (existingPhotoUrl.value && imagePreview.value === existingPhotoUrl.value) {
+      // Keep existing image (user didn't remove it)
+      postData.photoUrl = existingPhotoUrl.value
+    } else if (!imagePreview.value) {
+      // User removed the image
+      postData.photoUrl = null
     }
 
-    // Create post
-    let date = new Date()
-    if (selectedDate.value) {
+    // Get the date
+    let date = originalPostDate.value || new Date()
+    if (selectedDate.value && !originalPostDate.value) {
       // Parse the date string and set time to current time
       const selected = new Date(selectedDate.value)
       const now = new Date()
       selected.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
       date = selected
+    } else if (selectedDate.value && originalPostDate.value) {
+      // In edit mode, use the original date
+      date = originalPostDate.value
     }
-    await createPost(authStore.user.email, postData, date)
+
+    if (isEditMode.value && editingPostId.value) {
+      // Update existing post
+      await updatePost(
+        authStore.user.email,
+        editingPostId.value,
+        date,
+        postData,
+        existingPhotoUrl.value
+      )
+      trackPostUpdated()
+    } else {
+      // Create new post
+      await createPost(authStore.user.email, postData, date)
+      trackPostCreated()
+    }
 
     // Reset form
     note.value = ''
     selectedFile.value = null
     imagePreview.value = null
     selectedDate.value = new Date().toISOString().split('T')[0]
+    isEditMode.value = false
+    editingPostId.value = null
+    existingPhotoUrl.value = null
+    originalPostDate.value = null
 
     // Navigate back to dashboard
     router.push('/dashboard')
   } catch (err) {
-    error.value = 'Failed to post. Please try again.'
+    error.value = isEditMode.value ? 'Failed to update post. Please try again.' : 'Failed to post. Please try again.'
     console.error('Post error:', err)
   } finally {
     loading.value = false

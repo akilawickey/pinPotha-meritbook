@@ -39,8 +39,19 @@
           @click="viewPost(post)"
           class="card cursor-pointer hover:shadow-lg transition-shadow"
         >
-          <div v-if="post.photoUrl" class="w-full h-64 overflow-hidden rounded-t-lg mb-4">
-            <img :src="post.photoUrl" :alt="post.note" class="w-full h-full object-cover" />
+          <div class="w-full h-64 overflow-hidden rounded-t-lg mb-4 bg-gradient-to-br from-brand-accent/10 to-brand-accent/5 flex items-center justify-center">
+            <img 
+              v-if="post.photoUrl"
+              :src="post.photoUrl" 
+              :alt="post.note" 
+              class="w-full h-full object-cover"
+            />
+            <div v-else class="flex flex-col items-center justify-center p-8 text-center">
+              <svg class="w-16 h-16 text-brand-accent/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p class="text-brand-accent/60 text-xs font-medium">Good Thought</p>
+            </div>
           </div>
           <p v-if="post.note" class="text-gray-700">{{ post.note }}</p>
           <p v-else class="text-gray-400 italic">No note</p>

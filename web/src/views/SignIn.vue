@@ -4,7 +4,7 @@
       <div class="card text-center shadow-xl border-2 border-brand-accent/20">
         <!-- Logo Section -->
         <div class="mb-8 flex justify-center">
-          <Logo />
+          <Logo size="large" />
         </div>
         
         <!-- Tagline -->
