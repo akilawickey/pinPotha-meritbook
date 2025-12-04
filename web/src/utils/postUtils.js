@@ -4,7 +4,7 @@ import { database, storage } from '../firebase/config'
 import { formatDate } from './dateUtils'
 
 export const getUserEmailPath = (email) => {
-  return email.replace('.', ',')
+  return email.replace(/\./g, ',')
 }
 
 export const createPost = async (userId, postData, date = null) => {
@@ -48,7 +48,7 @@ export const deletePost = async (userId, postId, date, photoUrl = null) => {
       // Extract the path from the full URL
       // Firebase Storage URLs are like: https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{path}?alt=media
       const url = new URL(photoUrl)
-      const pathMatch = url.pathname.match(/\/o\/(.+)\?/)
+      const pathMatch = url.pathname.match(/\/o\/(.+)/)
       if (pathMatch) {
         const decodedPath = decodeURIComponent(pathMatch[1])
         const imageRef = storageRef(storage, decodedPath)

@@ -7,8 +7,8 @@ export const formatDate = (date, format = 'dd-MM-yyyy') => {
   
   return format
     .replace('dd', day)
-    .replace('MM', month)
     .replace('MMM', monthNames[d.getMonth()])
+    .replace('MM', month)
     .replace('yyyy', year)
 }
 
