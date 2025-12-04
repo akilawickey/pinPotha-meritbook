@@ -39,20 +39,36 @@ jobs:
             exit 1
           fi
 
+      - name: Verify Firebase configuration files
+        run: |
+          echo "Checking firebase.json..."
+          cat firebase.json
+          echo "Checking .firebaserc..."
+          cat .firebaserc
+          echo "Checking build output..."
+          ls -la web/dist/ || echo "Build directory not found"
+
+      - name: Setup Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Authenticate with Firebase
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/firebase-service-account.json
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
+          firebase use pinpotha-1295
+
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          channelId: live
-          projectId: pinpotha-1295
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
+          firebase deploy --only hosting --project pinpotha-1295
 
       - name: Deploy Firebase Database Rules
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: pinpotha-1295
-          only: database
+        run: |
+          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
+          firebase deploy --only database --project pinpotha-1295
         continue-on-error: true
+
+      - name: Cleanup
+        if: always()
+        run: rm -f $HOME/firebase-service-account.json
 
