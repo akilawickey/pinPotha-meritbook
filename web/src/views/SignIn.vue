@@ -1,23 +1,33 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary-50 via-white to-brand-accent-light/20 px-4 py-8">
     <div class="max-w-md w-full">
-      <div class="card text-center">
-        <div class="mb-8">
-          <h1 class="text-4xl font-bold text-primary-700 mb-2">PinPotha</h1>
-          <p class="text-gray-600">Record and remember the good things you've done</p>
+      <div class="card text-center shadow-xl border-2 border-brand-accent/20">
+        <!-- Logo Section -->
+        <div class="mb-8 flex justify-center">
+          <Logo />
         </div>
         
-        <div class="mb-6">
-          <p class="text-gray-700 mb-4">
-            The ancient people had a small book called 'PIN POTHA' which they used to record and memorize good things they had done. 
+        <!-- Tagline -->
+        <div class="mb-8">
+          <p class="text-secondary-700 text-lg font-medium mb-2">
+            Record and remember the good things you've done
+          </p>
+          <div class="w-24 h-1 bg-gradient-to-r from-brand-accent to-brand-accent-light mx-auto rounded-full"></div>
+        </div>
+        
+        <!-- Description -->
+        <div class="mb-8 px-4">
+          <p class="text-secondary-600 text-sm leading-relaxed">
+            The ancient people had a small book called <span class="font-semibold text-brand-accent">'PIN POTHA'</span> which they used to record and memorize good things they had done. 
             This app brings back that good habit to our modern era.
           </p>
         </div>
 
+        <!-- Sign In Button -->
         <button
           @click="handleSignIn"
           :disabled="loading"
-          class="w-full btn-primary flex items-center justify-center gap-3 py-3 text-lg"
+          class="w-full bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 text-lg"
         >
           <svg v-if="!loading" class="w-6 h-6" viewBox="0 0 24 24">
             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -29,7 +39,15 @@
           <span>{{ loading ? 'Signing in...' : 'Sign in with Google' }}</span>
         </button>
 
-        <p v-if="error" class="mt-4 text-red-600 text-sm">{{ error }}</p>
+        <!-- Error Message -->
+        <p v-if="error" class="mt-4 text-red-600 text-sm bg-red-50 py-2 px-4 rounded-lg">{{ error }}</p>
+      </div>
+      
+      <!-- Footer -->
+      <div class="mt-6 text-center">
+        <p class="text-secondary-600 text-xs">
+          Powered by <span class="font-semibold text-brand-dark">leafylanka</span>
+        </p>
       </div>
     </div>
   </div>
@@ -38,6 +56,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
+import Logo from '../components/Logo.vue'
 
 const authStore = useAuthStore()
 const loading = ref(false)
@@ -57,3 +76,9 @@ const handleSignIn = async () => {
 }
 </script>
 
+<style scoped>
+.card {
+  @apply bg-white rounded-2xl p-8;
+  box-shadow: 0 10px 40px rgba(30, 58, 95, 0.1);
+}
+</style>

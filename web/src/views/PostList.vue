@@ -1,15 +1,15 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+    <header class="bg-white shadow-md sticky top-0 z-10 border-b-2 border-brand-accent/20">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded">
+          <button @click="$router.back()" class="p-2 hover:bg-brand-accent/10 rounded-lg transition-colors text-secondary-600 hover:text-brand-accent">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 class="text-xl font-semibold">{{ formattedDate }}</h1>
+          <h1 class="text-xl font-semibold text-brand-dark">{{ formattedDate }}</h1>
           <div class="w-10"></div>
         </div>
       </div>
@@ -18,15 +18,15 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div v-if="loading" class="text-center py-12">
-        <div class="animate-spin text-primary-600 text-4xl">⏳</div>
-        <p class="mt-4 text-gray-600">Loading posts...</p>
+        <div class="animate-spin text-brand-accent text-4xl">⏳</div>
+        <p class="mt-4 text-secondary-600">Loading posts...</p>
       </div>
 
       <div v-else-if="posts.length === 0" class="text-center py-12">
-        <p class="text-gray-500 text-lg">No posts for this date</p>
+        <p class="text-secondary-500 text-lg">No posts for this date</p>
         <button
           @click="goToAdd"
-          class="mt-4 btn-primary"
+          class="mt-4 bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-2 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
         >
           Add Good Thought
         </button>
@@ -51,7 +51,7 @@
     <!-- Floating Action Button -->
     <button
       @click="goToAdd"
-      class="fixed bottom-6 right-6 bg-primary-600 hover:bg-primary-700 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+      class="fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accent-hover text-white rounded-full w-14 h-14 shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-2xl"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

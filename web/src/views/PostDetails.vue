@@ -1,19 +1,19 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+    <header class="bg-white shadow-md sticky top-0 z-10 border-b-2 border-brand-accent/20">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <button @click="$router.back()" class="p-2 hover:bg-gray-100 rounded">
+          <button @click="$router.back()" class="p-2 hover:bg-brand-accent/10 rounded-lg transition-colors text-secondary-600 hover:text-brand-accent">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <h1 class="text-xl font-semibold">{{ formattedDate }}</h1>
+          <h1 class="text-xl font-semibold text-brand-dark">{{ formattedDate }}</h1>
           <div class="flex gap-2">
             <button
               @click="handleShare"
-              class="p-2 hover:bg-gray-100 rounded"
+              class="p-2 hover:bg-brand-accent/10 rounded-lg transition-colors text-secondary-600 hover:text-brand-accent"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -21,7 +21,7 @@
             </button>
             <button
               @click="showDeleteDialog = true"
-              class="p-2 hover:bg-red-50 rounded text-red-600"
+              class="p-2 hover:bg-red-50 rounded-lg text-red-600 transition-colors"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -35,8 +35,8 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div v-if="loading" class="text-center py-12">
-        <div class="animate-spin text-primary-600 text-4xl">⏳</div>
-        <p class="mt-4 text-gray-600">Loading post...</p>
+        <div class="animate-spin text-brand-accent text-4xl">⏳</div>
+        <p class="mt-4 text-secondary-600">Loading post...</p>
       </div>
 
       <div v-else-if="post" class="card">

@@ -1,14 +1,22 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+    <header class="bg-white shadow-md sticky top-0 z-10 border-b-2 border-brand-accent/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <h1 class="text-2xl font-bold text-primary-700">PinPotha</h1>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="15" y="10" width="35" height="60" rx="4" fill="#ffffff"/>
+                <rect x="48" y="20" width="30" height="40" rx="2" fill="#ffffff"/>
+              </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-brand-dark">PinPotha</h1>
+          </div>
           <div class="flex items-center gap-4">
             <button
               @click="showSearch = !showSearch"
-              class="p-2 text-gray-600 hover:text-gray-900"
+              class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -16,7 +24,7 @@
             </button>
             <button
               @click="toggleMenu"
-              class="p-2 text-gray-600 hover:text-gray-900"
+              class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -63,7 +71,7 @@
         <nav class="p-4">
           <button
             @click="handleSignOut"
-            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           >
             Sign Out
           </button>
@@ -104,9 +112,9 @@
             @click="selectDate(day.date)"
             :class="[
               'aspect-square flex items-center justify-center rounded-lg cursor-pointer transition-colors',
-              day.isCurrentMonth ? 'hover:bg-gray-100' : 'text-gray-300',
-              day.hasPosts ? 'bg-primary-100 font-semibold' : '',
-              isSelectedDate(day.date) ? 'bg-primary-600 text-white' : ''
+              day.isCurrentMonth ? 'hover:bg-secondary-100' : 'text-gray-300',
+              day.hasPosts ? 'bg-brand-accent/20 font-semibold text-brand-dark' : '',
+              isSelectedDate(day.date) ? 'bg-brand-accent text-white shadow-md' : ''
             ]"
           >
             {{ day.day }}
@@ -116,8 +124,8 @@
 
       <!-- Posts Grid -->
       <div v-if="loading" class="text-center py-12">
-        <div class="animate-spin text-primary-600 text-4xl">⏳</div>
-        <p class="mt-4 text-gray-600">Loading posts...</p>
+        <div class="animate-spin text-brand-accent text-4xl">⏳</div>
+        <p class="mt-4 text-secondary-600">Loading posts...</p>
       </div>
       
       <div v-else-if="filteredPosts.length === 0" class="text-center py-12">
@@ -145,7 +153,7 @@
     <!-- Floating Action Button -->
     <button
       @click="$router.push('/add')"
-      class="fixed bottom-6 right-6 bg-primary-600 hover:bg-primary-700 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center transition-transform hover:scale-110"
+      class="fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accent-hover text-white rounded-full w-14 h-14 shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-2xl"
     >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

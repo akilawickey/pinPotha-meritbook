@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "posts": {
+      "$userEmail": {
+        ".read": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+        ".write": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+        "$date": {
+          ".read": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+          ".write": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+          "$postId": {
+            ".read": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+            ".write": "auth != null && $userEmail === auth.token.email.replace('.', ',')",
+            ".validate": "newData.hasChildren(['postId', 'timeStamp']) && newData.child('postId').val() === $postId && newData.child('timeStamp').hasChild('server_time')"
+          }
+        }
+      }
+    }
+  }
+}

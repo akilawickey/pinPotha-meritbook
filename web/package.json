@@ -1,6 +1,7 @@
 {
   "name": "pinpotha-web",
   "version": "1.0.0",
+  "type": "module",
   "description": "PinPotha - Good Thoughts Web Application",
   "private": true,
   "scripts": {
