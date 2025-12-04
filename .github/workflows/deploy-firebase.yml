@@ -62,21 +62,20 @@ jobs:
           cat .firebaserc
 
       - name: Deploy to Firebase Hosting
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-service-account.json
-        run: |
-          # Use service account for authentication
-          PROJECT_ID=$(cat $HOME/firebase-service-account.json | jq -r '.project_id' || echo "pinpotha-1295")
-          echo "Deploying to project: $PROJECT_ID"
-          firebase deploy --only hosting --project $PROJECT_ID --non-interactive
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: pinpotha-1295
 
       - name: Deploy Firebase Database Rules
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-service-account.json
-        run: |
-          PROJECT_ID=$(cat $HOME/firebase-service-account.json | jq -r '.project_id' || echo "pinpotha-1295")
-          echo "Deploying database rules to project: $PROJECT_ID"
-          firebase deploy --only database --project $PROJECT_ID --non-interactive
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: pinpotha-1295
+          only: database
         continue-on-error: true
 
       - name: Cleanup
