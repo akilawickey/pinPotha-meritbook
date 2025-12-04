@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="colorPrimary">#ff8400</color>
-    <color name="colorPrimaryDark">#ff6f00</color>
-    <color name="colorAccent">#ff8400</color>
-    <color name="colorGray">#f2f2f2</color>
-    <color name="calenderBackground">#FFD48243</color>
-    <color name="calendarSelectedDay">#ffab40</color>
-</resources>
