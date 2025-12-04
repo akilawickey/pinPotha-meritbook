@@ -31,6 +31,14 @@ jobs:
         working-directory: ./web
         run: npm run build
 
+      - name: Check Firebase Service Account Secret
+        run: |
+          if [ -z "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set. Please add it in Repository Settings → Secrets → Actions"
+            echo "See .github/workflows/README.md for setup instructions"
+            exit 1
+          fi
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
