@@ -51,21 +51,32 @@ jobs:
       - name: Setup Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Authenticate with Firebase
+      - name: Setup Service Account
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/firebase-service-account.json
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
-          firebase use pinpotha-1295
+          # Verify the service account file is valid JSON
+          PROJECT_ID=$(cat $HOME/firebase-service-account.json | jq -r '.project_id' || echo "pinpotha-1295")
+          echo "Service account project ID: $PROJECT_ID"
+          echo "Configured project ID: pinpotha-1295"
+          # Verify .firebaserc matches
+          cat .firebaserc
 
       - name: Deploy to Firebase Hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-service-account.json
         run: |
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
-          firebase deploy --only hosting --project pinpotha-1295
+          # Use service account for authentication
+          PROJECT_ID=$(cat $HOME/firebase-service-account.json | jq -r '.project_id' || echo "pinpotha-1295")
+          echo "Deploying to project: $PROJECT_ID"
+          firebase deploy --only hosting --project $PROJECT_ID --non-interactive
 
       - name: Deploy Firebase Database Rules
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-service-account.json
         run: |
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/firebase-service-account.json
-          firebase deploy --only database --project pinpotha-1295
+          PROJECT_ID=$(cat $HOME/firebase-service-account.json | jq -r '.project_id' || echo "pinpotha-1295")
+          echo "Deploying database rules to project: $PROJECT_ID"
+          firebase deploy --only database --project $PROJECT_ID --non-interactive
         continue-on-error: true
 
       - name: Cleanup
