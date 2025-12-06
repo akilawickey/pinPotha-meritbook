@@ -163,12 +163,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { getAllPosts, deletePost } from '../utils/postUtils'
 import { formatDate } from '../utils/dateUtils'
 import { trackPostDeleted, trackPostViewed } from '../utils/analytics'
+import { setSEO, addStructuredData, generateArticleSchema } from '../utils/seo'
 
 const route = useRoute()
 const router = useRouter()
@@ -250,6 +251,24 @@ const findPost = () => {
     if (foundPost) {
       post.value = foundPost
       trackPostViewed()
+      
+      // Update SEO for this post
+      const postNote = foundPost.note || 'Good Thought'
+      const postDescription = postNote.length > 160 ? postNote.substring(0, 157) + '...' : postNote
+      
+      setSEO({
+        title: `${postNote.substring(0, 50)}${postNote.length > 50 ? '...' : ''} - PinPotha`,
+        description: postDescription,
+        image: foundPost.photoUrl || 'https://pinpotha.lk/og-image.png',
+        url: `https://pinpotha.lk/post/${foundPost.postId}`,
+        type: 'article'
+      })
+      
+      // Add Article structured data
+      const articleSchema = generateArticleSchema(foundPost)
+      if (articleSchema) {
+        addStructuredData(articleSchema)
+      }
     }
     loading.value = false
     if (unsubscribePosts) {
