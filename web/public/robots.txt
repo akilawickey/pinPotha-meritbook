@@ -1,0 +1,21 @@
+# robots.txt for PinPotha
+# https://pinpotha.lk/robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow private routes (require authentication)
+Disallow: /dashboard
+Disallow: /add
+Disallow: /posts/
+Disallow: /post/
+
+# Allow public pages
+Allow: /
+
+# Sitemap location
+Sitemap: https://pinpotha.lk/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1
+

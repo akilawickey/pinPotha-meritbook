@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 import { getDatabase } from 'firebase/database'
 import { getStorage } from 'firebase/storage'
+import { getAnalytics, isSupported } from 'firebase/analytics'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbz7tp2TJV0xQkbaI1fkpGz3ixejiCkCA",
@@ -21,6 +22,20 @@ export const auth = getAuth(app)
 export const database = getDatabase(app)
 export const storage = getStorage(app)
 export const googleProvider = new GoogleAuthProvider()
+
+// Initialize Analytics (only in browser environment)
+let analytics = null
+if (typeof window !== 'undefined') {
+  // Initialize Analytics synchronously if supported
+  try {
+    analytics = getAnalytics(app)
+  } catch (error) {
+    // Analytics might not be supported in this environment
+    console.warn('Firebase Analytics not available:', error)
+  }
+}
+
+export { analytics }
 
 export default app
 

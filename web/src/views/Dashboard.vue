@@ -1,22 +1,20 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
     <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-10 border-b-2 border-brand-accent/20">
+    <header class="bg-white shadow-lg sticky top-0 z-10 border-b-2 border-brand-accent/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="15" y="10" width="35" height="60" rx="4" fill="#ffffff"/>
-                <rect x="48" y="20" width="30" height="40" rx="2" fill="#ffffff"/>
-              </svg>
-            </div>
-            <h1 class="text-2xl font-bold text-brand-dark">PinPotha</h1>
+        <div class="flex items-center justify-between h-20">
+          <!-- Logo -->
+          <div class="flex items-center flex-1">
+            <Logo size="small" />
           </div>
-          <div class="flex items-center gap-4">
+          
+          <!-- Right side buttons -->
+          <div class="flex items-center gap-3">
             <button
               @click="showSearch = !showSearch"
               class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
+              :class="{ 'text-brand-accent bg-brand-accent/10': showSearch }"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -34,11 +32,11 @@
         </div>
         
         <!-- Search Bar -->
-        <div v-if="showSearch" class="pb-4">
+        <div v-if="showSearch" class="pb-4 animate-slide-down">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Search by note..."
+            placeholder="Search your good thoughts..."
             class="input-field"
           />
         </div>
@@ -48,30 +46,30 @@
     <!-- Side Menu -->
     <div
       v-if="showMenu"
-      class="fixed inset-0 z-20 bg-black bg-opacity-50"
+      class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity"
       @click="showMenu = false"
     >
       <div
         class="fixed right-0 top-0 h-full w-64 bg-white shadow-xl transform transition-transform"
         @click.stop
       >
-        <div class="p-4 border-b">
+        <div class="p-6 border-b border-gray-200">
           <div class="flex items-center gap-3 mb-4">
             <img
               :src="authStore.user?.photoURL || '/default-avatar.png'"
               :alt="authStore.user?.displayName"
-              class="w-12 h-12 rounded-full"
+              class="w-14 h-14 rounded-full border-2 border-brand-accent/20"
             />
             <div>
-              <p class="font-semibold">{{ authStore.user?.displayName }}</p>
-              <p class="text-sm text-gray-600">{{ authStore.user?.email }}</p>
+              <p class="font-semibold text-brand-dark">{{ authStore.user?.displayName }}</p>
+              <p class="text-sm text-secondary-600">{{ authStore.user?.email }}</p>
             </div>
           </div>
         </div>
         <nav class="p-4">
           <button
             @click="handleSignOut"
-            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
           >
             Sign Out
           </button>
@@ -80,85 +78,183 @@
     </div>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <!-- Calendar Section -->
-      <div class="card mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">{{ currentMonth }}</h2>
-          <div class="flex gap-2">
-            <button @click="previousMonth" class="p-2 hover:bg-gray-100 rounded">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Add Good Thing Button -->
+      <div class="mb-6">
+        <button
+          @click="$router.push('/add')"
+          class="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3 text-lg"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Good Thought</span>
+        </button>
+      </div>
+
+      <!-- Posts Section -->
+      <div v-if="loading" class="text-center py-20">
+        <div class="animate-spin text-brand-accent text-5xl mb-4">⏳</div>
+        <p class="text-secondary-600 text-lg">Loading your good thoughts...</p>
+      </div>
+      
+      <div v-else-if="filteredPosts.length === 0" class="text-center py-20">
+        <div class="max-w-md mx-auto">
+          <div class="w-32 h-32 mx-auto mb-6 bg-brand-accent/10 rounded-full flex items-center justify-center">
+            <svg class="w-16 h-16 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="text-2xl font-bold text-brand-dark mb-2">No good thoughts yet</h3>
+          <p class="text-secondary-600 mb-6">Start recording the good things you've done!</p>
+          <button
+            @click="$router.push('/add')"
+            class="bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all"
+          >
+            Add Your First Good Thought
+          </button>
+        </div>
+      </div>
+      
+      <!-- Posts Grid - Improved Design -->
+      <div v-else>
+        <div class="mb-6 flex items-center justify-between flex-wrap gap-4">
+          <h2 class="text-2xl font-bold text-brand-dark">
+            Your Good Thoughts
+            <span class="text-lg font-normal text-secondary-600 ml-2">({{ filteredPosts.length }})</span>
+          </h2>
+          
+          <!-- Posts per page selector (optional) -->
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-secondary-600">Show:</label>
+            <select
+              v-model="postsPerPage"
+              @change="currentPage = 1"
+              class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-brand-accent focus:border-brand-accent outline-none"
+            >
+              <option :value="6">6</option>
+              <option :value="12">12</option>
+              <option :value="24">24</option>
+              <option :value="48">48</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            v-for="post in paginatedPosts"
+            :key="post.postId"
+            @click="viewPost(post)"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 overflow-hidden border border-gray-100"
+          >
+            <!-- Image Section -->
+            <div class="w-full h-64 overflow-hidden bg-gradient-to-br from-brand-accent/10 to-brand-accent/5 flex items-center justify-center">
+              <img 
+                v-if="post.photoUrl"
+                :src="post.photoUrl" 
+                :alt="post.note" 
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              />
+              <div v-else class="flex flex-col items-center justify-center p-8 text-center">
+                <svg class="w-20 h-20 text-brand-accent/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <p class="text-brand-accent/60 text-sm font-medium">Good Thought</p>
+              </div>
+            </div>
+            
+            <!-- Content Section -->
+            <div class="p-5">
+              <!-- Date Badge -->
+              <div class="mb-3">
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-brand-accent bg-brand-accent/10 px-3 py-1 rounded-full">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {{ getPostDate(post) }}
+                </span>
+              </div>
+              
+              <!-- Note Text -->
+              <div class="min-h-[60px]">
+                <p v-if="post.note" class="text-gray-800 text-base leading-relaxed line-clamp-3">
+                  {{ post.note }}
+                </p>
+                <p v-else class="text-gray-400 italic text-sm">
+                  No note added
+                </p>
+              </div>
+              
+              <!-- Footer with icon indicator -->
+              <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-xs text-secondary-600">
+                  <svg v-if="post.photoUrl" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span v-if="post.photoUrl">With Photo</span>
+                  <span v-else>Text Only</span>
+                </div>
+                <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div v-if="totalPages > 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <!-- Posts Info -->
+          <div class="text-sm text-secondary-600">
+            Showing {{ ((currentPage - 1) * postsPerPage) + 1 }} - {{ Math.min(currentPage * postsPerPage, filteredPosts.length) }} of {{ filteredPosts.length }} posts
+          </div>
+          
+          <!-- Pagination Controls -->
+          <div class="flex items-center gap-2">
+            <!-- Previous Button -->
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="!hasPreviousPage"
+              class="px-4 py-2 rounded-lg border border-gray-300 text-secondary-700 hover:bg-brand-accent hover:text-white hover:border-brand-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-secondary-700"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <button @click="nextMonth" class="p-2 hover:bg-gray-100 rounded">
+            
+            <!-- Page Numbers -->
+            <div class="flex items-center gap-1">
+              <template v-for="page in getPageNumbers()" :key="page">
+                <button
+                  v-if="page !== '...'"
+                  @click="goToPage(page)"
+                  :class="[
+                    'px-4 py-2 rounded-lg border transition-all min-w-[40px]',
+                    page === currentPage
+                      ? 'bg-brand-accent text-white border-brand-accent font-semibold'
+                      : 'border-gray-300 text-secondary-700 hover:bg-brand-accent/10 hover:border-brand-accent/50'
+                  ]"
+                >
+                  {{ page }}
+                </button>
+                <span v-else class="px-2 text-secondary-500">...</span>
+              </template>
+            </div>
+            
+            <!-- Next Button -->
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="!hasNextPage"
+              class="px-4 py-2 rounded-lg border border-gray-300 text-secondary-700 hover:bg-brand-accent hover:text-white hover:border-brand-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-secondary-700"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </button>
           </div>
         </div>
-        
-        <div class="grid grid-cols-7 gap-2 mb-2">
-          <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-sm font-medium text-gray-600">
-            {{ day }}
-          </div>
-        </div>
-        
-        <div class="grid grid-cols-7 gap-2">
-          <div
-            v-for="day in calendarDays"
-            :key="day.date"
-            @click="selectDate(day.date)"
-            :class="[
-              'aspect-square flex items-center justify-center rounded-lg cursor-pointer transition-colors',
-              day.isCurrentMonth ? 'hover:bg-secondary-100' : 'text-gray-300',
-              day.hasPosts ? 'bg-brand-accent/20 font-semibold text-brand-dark' : '',
-              isSelectedDate(day.date) ? 'bg-brand-accent text-white shadow-md' : ''
-            ]"
-          >
-            {{ day.day }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Posts Grid -->
-      <div v-if="loading" class="text-center py-12">
-        <div class="animate-spin text-brand-accent text-4xl">⏳</div>
-        <p class="mt-4 text-secondary-600">Loading posts...</p>
-      </div>
-      
-      <div v-else-if="filteredPosts.length === 0" class="text-center py-12">
-        <p class="text-gray-500 text-lg">No posts yet</p>
-        <p class="text-gray-400 mt-2">Start recording your good thoughts!</p>
-      </div>
-      
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        <div
-          v-for="post in filteredPosts"
-          :key="post.postId"
-          @click="viewPost(post)"
-          class="card cursor-pointer hover:shadow-lg transition-shadow aspect-square overflow-hidden"
-        >
-          <div v-if="post.photoUrl" class="w-full h-3/4 overflow-hidden rounded-t-lg">
-            <img :src="post.photoUrl" :alt="post.note" class="w-full h-full object-cover" />
-          </div>
-          <div class="p-2 h-1/4 flex items-center">
-            <p class="text-sm text-gray-700 line-clamp-2">{{ post.note || 'No note' }}</p>
-          </div>
-        </div>
       </div>
     </main>
-
-    <!-- Floating Action Button -->
-    <button
-      @click="$router.push('/add')"
-      class="fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accent-hover text-white rounded-full w-14 h-14 shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-2xl"
-    >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-    </button>
   </div>
 </template>
 
@@ -166,56 +262,23 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { getAllPosts, getPostDates } from '../utils/postUtils'
+import { getAllPosts } from '../utils/postUtils'
 import { formatDate } from '../utils/dateUtils'
+import Logo from '../components/Logo.vue'
+import { trackSearch } from '../utils/analytics'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const posts = ref([])
-const postDates = ref([])
 const loading = ref(true)
 const showMenu = ref(false)
 const showSearch = ref(false)
 const searchQuery = ref('')
-const currentDate = ref(new Date())
-const selectedDate = ref(null)
+const currentPage = ref(1)
+const postsPerPage = ref(12) // Show 12 posts per page
 
 let unsubscribePosts = null
-let unsubscribeDates = null
-
-const currentMonth = computed(() => {
-  return formatDate(currentDate.value, 'MMM yyyy')
-})
-
-const calendarDays = computed(() => {
-  const year = currentDate.value.getFullYear()
-  const month = currentDate.value.getMonth()
-  const firstDay = new Date(year, month, 1)
-  const lastDay = new Date(year, month + 1, 0)
-  const startDate = new Date(firstDay)
-  startDate.setDate(startDate.getDate() - firstDay.getDay())
-  
-  const days = []
-  for (let i = 0; i < 42; i++) {
-    const date = new Date(startDate)
-    date.setDate(startDate.getDate() + i)
-    const dayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    
-    days.push({
-      date: dayDate,
-      day: date.getDate(),
-      isCurrentMonth: date.getMonth() === month,
-      hasPosts: postDates.value.some(d => {
-        const dDate = new Date(d)
-        return dDate.getFullYear() === dayDate.getFullYear() &&
-               dDate.getMonth() === dayDate.getMonth() &&
-               dDate.getDate() === dayDate.getDate()
-      })
-    })
-  }
-  return days
-})
 
 const filteredPosts = computed(() => {
   if (!searchQuery.value) {
@@ -227,22 +290,60 @@ const filteredPosts = computed(() => {
   )
 })
 
-const isSelectedDate = (date) => {
-  if (!selectedDate.value) return false
-  return date.getTime() === selectedDate.value.getTime()
-}
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * postsPerPage.value
+  const end = start + postsPerPage.value
+  return filteredPosts.value.slice(start, end)
+})
 
-const selectDate = (date) => {
-  selectedDate.value = date
-  router.push(`/posts/${date.getTime()}`)
-}
+const totalPages = computed(() => {
+  return Math.ceil(filteredPosts.value.length / postsPerPage.value)
+})
 
-const previousMonth = () => {
-  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1)
-}
+const hasNextPage = computed(() => {
+  return currentPage.value < totalPages.value
+})
 
-const nextMonth = () => {
-  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1)
+const hasPreviousPage = computed(() => {
+  return currentPage.value > 1
+})
+
+const getPostDate = (post) => {
+  if (!post.timeStamp) {
+    return 'Unknown date'
+  }
+  
+  try {
+    let timestamp = post.timeStamp.server_time
+    
+    // Handle Firebase ServerValue.TIMESTAMP object format
+    if (timestamp && typeof timestamp === 'object' && timestamp['.sv']) {
+      // This is a Firebase server timestamp placeholder, use current time as fallback
+      timestamp = Date.now()
+    }
+    
+    // Handle string timestamps
+    if (typeof timestamp === 'string') {
+      timestamp = parseInt(timestamp)
+    }
+    
+    // Check if timestamp is valid number
+    if (!timestamp || isNaN(timestamp) || timestamp <= 0) {
+      return 'Unknown date'
+    }
+    
+    const date = new Date(timestamp)
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Unknown date'
+    }
+    
+    return formatDate(date, 'dd MMM yyyy')
+  } catch (error) {
+    console.error('Error formatting date:', error, post)
+    return 'Unknown date'
+  }
 }
 
 const toggleMenu = () => {
@@ -258,6 +359,68 @@ const handleSignOut = async () => {
   showMenu.value = false
 }
 
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+    // Scroll to top of posts section
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+const getPageNumbers = () => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+  
+  if (total <= 7) {
+    // Show all pages if 7 or fewer
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    // Show first page, current page, and pages around it
+    if (current <= 3) {
+      // Near the start
+      for (let i = 1; i <= 5; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    } else if (current >= total - 2) {
+      // Near the end
+      pages.push(1)
+      pages.push('...')
+      for (let i = total - 4; i <= total; i++) {
+        pages.push(i)
+      }
+    } else {
+      // In the middle
+      pages.push(1)
+      pages.push('...')
+      for (let i = current - 1; i <= current + 1; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    }
+  }
+  
+  return pages
+}
+
+// Reset to page 1 when search query changes and track search
+watch(searchQuery, (newQuery) => {
+  currentPage.value = 1
+  if (newQuery && newQuery.trim().length > 0) {
+    trackSearch(newQuery.trim())
+  }
+})
+
+// Reset to page 1 when posts per page changes
+watch(postsPerPage, () => {
+  currentPage.value = 1
+})
+
 onMounted(() => {
   if (authStore.user) {
     unsubscribePosts = getAllPosts(authStore.user.email, (data) => {
@@ -268,16 +431,34 @@ onMounted(() => {
       })
       loading.value = false
     })
-    
-    unsubscribeDates = getPostDates(authStore.user.email, (dates) => {
-      postDates.value = dates
-    })
   }
 })
 
 onUnmounted(() => {
   if (unsubscribePosts) unsubscribePosts()
-  if (unsubscribeDates) unsubscribeDates()
 })
 </script>
 
+<style scoped>
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
