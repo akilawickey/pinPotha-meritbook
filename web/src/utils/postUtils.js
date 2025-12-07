@@ -36,13 +36,72 @@ export const uploadImage = async (file) => {
   return downloadURL
 }
 
+export const updatePost = async (userId, postId, date, postData, oldPhotoUrl = null) => {
+  const emailPath = getUserEmailPath(userId)
+  const postDate = formatDate(date, 'dd-MM-yyyy')
+  
+  // Construct the post reference path
+  const postRef = dbRef(database, `posts/${emailPath}/${postDate}/${postId}`)
+  
+  console.log('Updating post at path:', `posts/${emailPath}/${postDate}/${postId}`)
+  
+  try {
+    // Get existing post data to preserve postId and timeStamp
+    const existingPost = {
+      postId: postId,
+      timeStamp: {
+        server_time: date.getTime()
+      },
+      ...postData
+    }
+    
+    // Update the post in database
+    await set(postRef, existingPost)
+    console.log('Post updated in database successfully')
+    
+    // If a new image was uploaded and there's an old image, delete the old one
+    if (postData.photoUrl && oldPhotoUrl && postData.photoUrl !== oldPhotoUrl) {
+      try {
+        const url = new URL(oldPhotoUrl)
+        const pathMatch = url.pathname.match(/\/o\/(.+)/)
+        if (pathMatch) {
+          const decodedPath = decodeURIComponent(pathMatch[1])
+          const imageRef = storageRef(storage, decodedPath)
+          await deleteObject(imageRef)
+          console.log('Old image deleted from storage successfully')
+        }
+      } catch (error) {
+        console.error('Error deleting old image from storage:', error)
+        // Don't throw - old image deletion failure shouldn't prevent post update
+      }
+    }
+    
+    return existingPost
+  } catch (error) {
+    console.error('Error updating post in database:', error)
+    throw new Error('Failed to update post: ' + error.message)
+  }
+}
+
 export const deletePost = async (userId, postId, date, photoUrl = null) => {
   const emailPath = getUserEmailPath(userId)
   const postDate = formatDate(date, 'dd-MM-yyyy')
   
+  // Construct the post reference path
   const postRef = dbRef(database, `posts/${emailPath}/${postDate}/${postId}`)
-  await remove(postRef)
   
+  console.log('Deleting post from path:', `posts/${emailPath}/${postDate}/${postId}`)
+  
+  try {
+    // Delete the post from database first
+    await remove(postRef)
+    console.log('Post deleted from database successfully')
+  } catch (error) {
+    console.error('Error deleting post from database:', error)
+    throw new Error('Failed to delete post from database: ' + error.message)
+  }
+  
+  // Delete the image from storage if it exists
   if (photoUrl) {
     try {
       // Extract the path from the full URL
@@ -53,10 +112,14 @@ export const deletePost = async (userId, postId, date, photoUrl = null) => {
         const decodedPath = decodeURIComponent(pathMatch[1])
         const imageRef = storageRef(storage, decodedPath)
         await deleteObject(imageRef)
+        console.log('Image deleted from storage successfully')
+      } else {
+        console.warn('Could not extract path from photoUrl:', photoUrl)
       }
     } catch (error) {
-      console.error('Error deleting image:', error)
-      // Continue even if image deletion fails
+      console.error('Error deleting image from storage:', error)
+      // Don't throw - image deletion failure shouldn't prevent post deletion
+      // The post is already deleted, so we just log the error
     }
   }
 }
