@@ -1,7 +1,11 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
     <!-- Header -->
-    <header class="bg-white shadow-lg sticky top-0 z-10 border-b-2 border-brand-accent/20">
+    <header 
+      class="bg-white shadow-lg sticky top-0 z-10 border-b-2 border-brand-accent/20"
+      @touchstart.stop
+      @touchmove.stop
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
           <!-- Logo -->
@@ -13,6 +17,7 @@
           <div class="flex items-center gap-3">
             <button
               @click="showSearch = !showSearch"
+              @touchstart.stop
               class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
               :class="{ 'text-brand-accent bg-brand-accent/10': showSearch }"
             >
@@ -22,6 +27,7 @@
             </button>
             <button
               @click="toggleMenu"
+              @touchstart.stop
               class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,12 +38,13 @@
         </div>
         
         <!-- Search Bar -->
-        <div v-if="showSearch" class="pb-4 animate-slide-down">
+        <div v-if="showSearch" class="pb-4 animate-slide-down" @touchstart.stop>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search your good thoughts..."
             class="input-field"
+            @touchstart.stop
           />
         </div>
       </div>
