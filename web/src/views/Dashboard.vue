@@ -43,42 +43,33 @@
       </div>
     </header>
 
-    <!-- Side Menu -->
+    <!-- Mobile Drawer -->
+    <MobileDrawer :is-open="showMenu" @close="showMenu = false" />
+
+    <!-- Pull to Refresh Indicator -->
     <div
-      v-if="showMenu"
-      class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity"
-      @click="showMenu = false"
+      v-if="isPulling"
+      class="fixed top-0 left-0 right-0 z-30 flex items-center justify-center bg-brand-accent/10 py-4 transition-transform"
+      :style="{ transform: `translateY(${Math.min(pullDistance, 80)}px)` }"
     >
-      <div
-        class="fixed right-0 top-0 h-full w-64 bg-white shadow-xl transform transition-transform"
-        @click.stop
-      >
-        <div class="p-6 border-b border-gray-200">
-          <div class="flex items-center gap-3 mb-4">
-            <img
-              :src="authStore.user?.photoURL || '/default-avatar.png'"
-              :alt="authStore.user?.displayName"
-              class="w-14 h-14 rounded-full border-2 border-brand-accent/20"
-            />
-            <div>
-              <p class="font-semibold text-brand-dark">{{ authStore.user?.displayName }}</p>
-              <p class="text-sm text-secondary-600">{{ authStore.user?.email }}</p>
-            </div>
-          </div>
-        </div>
-        <nav class="p-4">
-          <button
-            @click="handleSignOut"
-            class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
-          >
-            Sign Out
-          </button>
-        </nav>
+      <div class="flex items-center gap-2 text-brand-accent">
+        <svg
+          class="w-6 h-6 animate-spin"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span class="font-medium">Pull to refresh</span>
       </div>
     </div>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main
+      ref="mainContent"
+      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 sm:pb-8"
+    >
       <!-- Add Good Thing Button -->
       <div class="mb-6">
         <button
@@ -255,6 +246,9 @@
         </div>
       </div>
     </main>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <BottomNavigation :show-menu="showMenu" @toggle-menu="toggleMenu" />
   </div>
 </template>
 
@@ -265,7 +259,11 @@ import { useAuthStore } from '../stores/auth'
 import { getAllPosts } from '../utils/postUtils'
 import { formatDate } from '../utils/dateUtils'
 import Logo from '../components/Logo.vue'
+import BottomNavigation from '../components/BottomNavigation.vue'
+import MobileDrawer from '../components/MobileDrawer.vue'
 import { trackSearch } from '../utils/analytics'
+import { usePullToRefresh } from '../composables/useTouchGestures'
+import { postsCache } from '../utils/storage'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -277,8 +275,21 @@ const showSearch = ref(false)
 const searchQuery = ref('')
 const currentPage = ref(1)
 const postsPerPage = ref(12) // Show 12 posts per page
+const mainContent = ref(null)
 
 let unsubscribePosts = null
+
+// Pull to refresh
+const handleRefresh = async () => {
+  loading.value = true
+  // Clear cache and reload
+  if (authStore.user) {
+    await postsCache.clear(authStore.user.email)
+    loadPosts()
+  }
+}
+
+const { isPulling, pullDistance } = usePullToRefresh(handleRefresh)
 
 const filteredPosts = computed(() => {
   if (!searchQuery.value) {
@@ -421,17 +432,33 @@ watch(postsPerPage, () => {
   currentPage.value = 1
 })
 
-onMounted(() => {
-  if (authStore.user) {
-    unsubscribePosts = getAllPosts(authStore.user.email, (data) => {
-      posts.value = data.sort((a, b) => {
-        const timeA = a.timeStamp?.server_time || 0
-        const timeB = b.timeStamp?.server_time || 0
-        return timeB - timeA
-      })
-      loading.value = false
-    })
+const loadPosts = async () => {
+  if (!authStore.user) return
+
+  // Try to load from cache first
+  const cachedPosts = await postsCache.get(authStore.user.email)
+  if (cachedPosts) {
+    posts.value = cachedPosts
+    loading.value = false
   }
+
+  // Load from Firebase
+  unsubscribePosts = getAllPosts(authStore.user.email, async (data) => {
+    const sortedPosts = data.sort((a, b) => {
+      const timeA = a.timeStamp?.server_time || 0
+      const timeB = b.timeStamp?.server_time || 0
+      return timeB - timeA
+    })
+    posts.value = sortedPosts
+    loading.value = false
+    
+    // Cache the posts
+    await postsCache.set(authStore.user.email, sortedPosts)
+  })
+}
+
+onMounted(() => {
+  loadPosts()
 })
 
 onUnmounted(() => {

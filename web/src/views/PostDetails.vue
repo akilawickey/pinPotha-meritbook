@@ -44,7 +44,10 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main
+      ref="contentRef"
+      class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+    >
       <div v-if="loading" class="text-center py-12">
         <div class="animate-spin text-brand-accent text-4xl">⏳</div>
         <p class="mt-4 text-secondary-600">Loading post...</p>
@@ -170,6 +173,8 @@ import { getAllPosts, deletePost } from '../utils/postUtils'
 import { formatDate } from '../utils/dateUtils'
 import { trackPostDeleted, trackPostViewed } from '../utils/analytics'
 import { setSEO, addStructuredData, generateArticleSchema } from '../utils/seo'
+import { useSwipe } from '../composables/useTouchGestures'
+import { useDisplay } from '../composables/useDisplay'
 
 const route = useRoute()
 const router = useRouter()
@@ -179,6 +184,8 @@ const post = ref(null)
 const loading = ref(true)
 const showDeleteDialog = ref(false)
 const deleting = ref(false)
+const contentRef = ref(null)
+const { isMobile } = useDisplay()
 
 const postId = computed(() => route.params.postId)
 
@@ -401,6 +408,17 @@ const handleShare = async () => {
 
 onMounted(() => {
   findPost()
+  
+  // Setup swipe gestures for mobile navigation
+  if (isMobile.value && contentRef.value) {
+    useSwipe(contentRef, {
+      onSwipeLeft: () => {
+        // Swipe left to go back
+        router.back()
+      },
+      threshold: 50
+    })
+  }
 })
 </script>
 

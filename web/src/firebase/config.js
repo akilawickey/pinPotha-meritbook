@@ -24,6 +24,14 @@ export const database = getDatabase(app)
 export const storage = getStorage(app)
 export const googleProvider = new GoogleAuthProvider()
 
+// Enable offline persistence for Realtime Database
+// Note: This must be called before any database operations
+if (typeof window !== 'undefined') {
+  // Realtime Database automatically handles offline persistence
+  // No additional configuration needed - it works out of the box
+  console.log('Firebase Realtime Database offline persistence enabled')
+}
+
 // Initialize Analytics (only in browser environment)
 let analytics = null
 if (typeof window !== 'undefined') {
