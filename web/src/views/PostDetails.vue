@@ -13,8 +13,9 @@
           <div class="flex gap-2">
             <button
               @click="handleEdit"
-              class="p-2 hover:bg-brand-accent/10 rounded-lg transition-colors text-secondary-600 hover:text-brand-accent"
+              class="p-2 hover:bg-brand-accent/10 rounded-lg transition-colors text-secondary-600 hover:text-brand-accent min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Edit"
+              type="button"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -349,7 +350,11 @@ const handleDelete = async () => {
 }
 
 const handleEdit = () => {
-  if (!post.value) return
+  if (!post.value || !post.value.postId) {
+    console.error('Cannot edit: Invalid post data', post.value)
+    alert('Cannot edit this post. Post data is invalid.')
+    return
+  }
   
   // Get the post date correctly
   let timestamp = post.value.timeStamp?.server_time
@@ -366,9 +371,16 @@ const handleEdit = () => {
   
   // Validate timestamp
   if (!timestamp || isNaN(timestamp) || timestamp <= 0) {
+    console.error('Invalid timestamp:', timestamp, post.value.timeStamp)
     alert('Invalid post date. Cannot edit this post.')
     return
   }
+  
+  console.log('Editing post:', {
+    postId: post.value.postId,
+    timestamp: timestamp,
+    date: new Date(timestamp)
+  })
   
   // Navigate to edit page with post data
   router.push({
@@ -376,8 +388,11 @@ const handleEdit = () => {
     query: {
       edit: 'true',
       postId: post.value.postId,
-      date: timestamp
+      date: timestamp.toString()
     }
+  }).catch((error) => {
+    console.error('Navigation error:', error)
+    alert('Failed to navigate to edit page. Please try again.')
   })
 }
 

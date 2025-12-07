@@ -1,11 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
     <!-- Header -->
-    <header 
-      class="bg-white shadow-lg sticky top-0 z-10 border-b-2 border-brand-accent/20"
-      @touchstart.stop
-      @touchmove.stop
-    >
+    <header class="bg-white shadow-lg sticky top-0 z-10 border-b-2 border-brand-accent/20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20">
           <!-- Logo -->
@@ -17,7 +13,6 @@
           <div class="flex items-center gap-3">
             <button
               @click="showSearch = !showSearch"
-              @touchstart.stop
               class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
               :class="{ 'text-brand-accent bg-brand-accent/10': showSearch }"
             >
@@ -27,7 +22,6 @@
             </button>
             <button
               @click="toggleMenu"
-              @touchstart.stop
               class="p-2 text-secondary-600 hover:text-brand-accent transition-colors rounded-lg hover:bg-brand-accent/10"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,13 +32,12 @@
         </div>
         
         <!-- Search Bar -->
-        <div v-if="showSearch" class="pb-4 animate-slide-down" @touchstart.stop>
+        <div v-if="showSearch" class="pb-4 animate-slide-down">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search your good thoughts..."
             class="input-field"
-            @touchstart.stop
           />
         </div>
       </div>
@@ -56,7 +49,7 @@
     <!-- Pull to Refresh Indicator -->
     <div
       v-if="isPulling"
-      class="fixed top-0 left-0 right-0 z-30 flex items-center justify-center bg-brand-accent/10 py-4 transition-transform"
+      class="fixed top-0 left-0 right-0 z-30 flex items-center justify-center bg-brand-accent/10 py-4 transition-transform pointer-events-none"
       :style="{ transform: `translateY(${Math.min(pullDistance, 80)}px)` }"
     >
       <div class="flex items-center gap-2 text-brand-accent">
@@ -80,8 +73,9 @@
       <!-- Add Good Thing Button -->
       <div class="mb-6">
         <button
-          @click="$router.push('/add')"
-          class="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3 text-lg"
+          @click.stop.prevent="goToAddPost"
+          class="w-full sm:w-auto bg-brand-accent hover:bg-brand-accent-hover text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-3 text-lg min-h-[44px] relative z-10"
+          type="button"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -142,8 +136,11 @@
           <div
             v-for="post in paginatedPosts"
             :key="post.postId"
-            @click="viewPost(post)"
-            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 overflow-hidden border border-gray-100"
+            @click.stop.prevent="viewPost(post)"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 overflow-hidden border border-gray-100 relative"
+            role="button"
+            tabindex="0"
+            @keyup.enter.stop.prevent="viewPost(post)"
           >
             <!-- Image Section -->
             <div class="w-full h-64 overflow-hidden bg-gradient-to-br from-brand-accent/10 to-brand-accent/5 flex items-center justify-center">
@@ -151,9 +148,10 @@
                 v-if="post.photoUrl"
                 :src="post.photoUrl" 
                 :alt="post.note" 
-                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 select-none"
+                draggable="false"
               />
-              <div v-else class="flex flex-col items-center justify-center p-8 text-center">
+              <div v-else class="flex flex-col items-center justify-center p-8 text-center pointer-events-none">
                 <svg class="w-20 h-20 text-brand-accent/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -175,7 +173,7 @@
               
               <!-- Note Text -->
               <div class="min-h-[60px]">
-                <p v-if="post.note" class="text-gray-800 text-base leading-relaxed line-clamp-3">
+                <p v-if="post.note" class="text-gray-800 text-base leading-relaxed line-clamp-3" style="-webkit-line-clamp: 3; line-clamp: 3;">
                   {{ post.note }}
                 </p>
                 <p v-else class="text-gray-400 italic text-sm">
@@ -222,9 +220,10 @@
             
             <!-- Page Numbers -->
             <div class="flex items-center gap-1">
-              <template v-for="page in getPageNumbers()" :key="page">
+              <template v-for="page in getPageNumbers()">
                 <button
                   v-if="page !== '...'"
+                  :key="page"
                   @click="goToPage(page)"
                   :class="[
                     'px-4 py-2 rounded-lg border transition-all min-w-[40px]',
@@ -235,7 +234,7 @@
                 >
                   {{ page }}
                 </button>
-                <span v-else class="px-2 text-secondary-500">...</span>
+                <span v-else :key="`ellipsis-${page}`" class="px-2 text-secondary-500">...</span>
               </template>
             </div>
             
@@ -368,8 +367,32 @@ const toggleMenu = () => {
   showMenu.value = !showMenu.value
 }
 
-const viewPost = (post) => {
-  router.push(`/post/${post.postId}`)
+const goToAddPost = (event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+  console.log('Navigating to add post')
+  router.push('/add').catch((error) => {
+    console.error('Navigation error:', error)
+  })
+}
+
+const viewPost = (post, event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+  
+  if (!post || !post.postId) {
+    console.error('Invalid post:', post)
+    return
+  }
+  
+  console.log('Viewing post:', post.postId)
+  router.push(`/post/${post.postId}`).catch((error) => {
+    console.error('Navigation error:', error)
+  })
 }
 
 const handleSignOut = async () => {
@@ -492,6 +515,7 @@ onUnmounted(() => {
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
