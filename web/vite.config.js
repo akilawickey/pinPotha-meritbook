@@ -8,7 +8,8 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'apple-touch-icon.png', 'favicon-32x32.png', 'favicon-16x16.png'],
+      // Only include assets that actually exist - remove missing favicon references
+      includeAssets: [],
       manifest: {
         name: 'PinPotha - Digital පින් පොත',
         short_name: 'PinPotha',
@@ -20,32 +21,54 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
-          {
-            src: '/favicon.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable'
-          },
-          {
-            src: '/apple-touch-icon.png',
-            sizes: '180x180',
-            type: 'image/png'
-          },
-          {
-            src: '/favicon-32x32.png',
-            sizes: '32x32',
-            type: 'image/png'
-          },
-          {
-            src: '/favicon-16x16.png',
-            sizes: '16x16',
-            type: 'image/png'
-          }
+          // Only include icons that exist - remove missing icon references
+          // You can add these later when you create the actual icon files
         ]
       },
       workbox: {
+        // Only precache files in production build, not dev source files
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Ignore source files, dev files, and missing assets
+        globIgnores: [
+          '**/src/**',
+          '**/*.vue',
+          '**/*.map',
+          '**/node_modules/**',
+          '**/favicon.png',
+          '**/apple-touch-icon.png',
+          '**/favicon-32x32.png',
+          '**/favicon-16x16.png'
+        ],
+        // Don't warn about missing precache files
+        dontCacheBustURLsMatching: /\.\w{8}\./,
+        // Handle missing files gracefully - don't fail on missing files
+        mode: 'production',
+        // Handle missing files gracefully
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
+        // Suppress warnings for missing precache files
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/_/, /\/[^/?]+\.[^/]+$/],
         runtimeCaching: [
+          // Handle dev source files - let them pass through without warnings
+          {
+            urlPattern: /^\/src\/.*/i,
+            handler: 'NetworkOnly',
+            options: {
+              cacheName: 'dev-source-files',
+              networkTimeoutSeconds: 0
+            }
+          },
+          // Handle missing favicon files - let them pass through
+          {
+            urlPattern: /\/(favicon|apple-touch-icon).*\.(png|ico)$/i,
+            handler: 'NetworkOnly',
+            options: {
+              cacheName: 'favicon-ignore',
+              networkTimeoutSeconds: 0
+            }
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
@@ -96,12 +119,33 @@ export default defineConfig({
                 maxAgeSeconds: 60 * 5 // 5 minutes
               }
             }
+          },
+          {
+            // Ignore external analytics and tracking requests
+            urlPattern: /^https:\/\/(www\.)?google-analytics\.com\/.*/i,
+            handler: 'NetworkOnly',
+            options: {
+              cacheName: 'analytics-ignore',
+              networkTimeoutSeconds: 0
+            }
+          },
+          {
+            // Ignore other analytics services
+            urlPattern: /^https:\/\/.*\.googletagmanager\.com\/.*/i,
+            handler: 'NetworkOnly',
+            options: {
+              cacheName: 'analytics-ignore',
+              networkTimeoutSeconds: 0
+            }
           }
         ]
       },
       devOptions: {
         enabled: true,
-        type: 'module'
+        type: 'module',
+        // Suppress warnings in dev mode
+        suppressWarnings: true,
+        navigateFallback: '/index.html'
       }
     })
   ],

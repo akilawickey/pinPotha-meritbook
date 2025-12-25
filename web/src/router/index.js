@@ -74,8 +74,19 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
+  
+  // Wait for auth to initialize if still loading
+  // This is important after redirect-based authentication
+  if (authStore.loading) {
+    // Poll until auth is initialized (max 3 seconds)
+    const maxWait = 3000
+    const startTime = Date.now()
+    while (authStore.loading && (Date.now() - startTime) < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 50))
+    }
+  }
   
   if (to.meta.requiresAuth && !authStore.user) {
     next('/')

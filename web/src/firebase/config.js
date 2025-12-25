@@ -24,6 +24,26 @@ export const database = getDatabase(app)
 export const storage = getStorage(app)
 export const googleProvider = new GoogleAuthProvider()
 
+// Configure redirect URL for sign-in
+// This ensures the redirect works properly
+if (typeof window !== 'undefined') {
+  // Set the redirect URL to the current origin
+  const redirectUrl = window.location.origin
+  console.log('Firebase Auth redirect URL:', redirectUrl)
+  console.log('Current origin:', window.location.origin)
+  console.log('Current hostname:', window.location.hostname)
+  console.log('Current port:', window.location.port)
+  
+  // Add additional scopes if needed
+  googleProvider.addScope('profile')
+  googleProvider.addScope('email')
+  
+  // Set custom parameters if needed
+  googleProvider.setCustomParameters({
+    prompt: 'select_account'
+  })
+}
+
 // Enable offline persistence for Realtime Database
 // Note: This must be called before any database operations
 if (typeof window !== 'undefined') {

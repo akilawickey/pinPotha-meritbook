@@ -9,14 +9,8 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useAuthStore } from './stores/auth'
-
-const authStore = useAuthStore()
-
-onMounted(() => {
-  authStore.initAuth()
-})
+// Auth is initialized in main.js before app mount
+// to ensure auth state is ready before router guards run
 </script>
 
 <style>
