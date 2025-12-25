@@ -4,7 +4,7 @@
       <div class="card text-center shadow-xl border-2 border-brand-accent/20">
         <!-- Logo Section -->
         <div class="mb-8 flex justify-center">
-          <Logo />
+          <Logo size="large" />
         </div>
         
         <!-- Tagline -->
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import Logo from '../components/Logo.vue'
 
@@ -62,15 +62,22 @@ const authStore = useAuthStore()
 const loading = ref(false)
 const error = ref('')
 
+// Watch for redirect errors from auth store
+watch(() => authStore.redirectError, (newError) => {
+  if (newError) {
+    error.value = newError
+  }
+}, { immediate: true })
+
 const handleSignIn = async () => {
   try {
     loading.value = true
     error.value = ''
     await authStore.signInWithGoogle()
+    // If redirect succeeds, page will navigate away
+    // so we won't reach code below
   } catch (err) {
-    error.value = 'Failed to sign in. Please try again.'
-    console.error('Sign in error:', err)
-  } finally {
+    error.value = err.message || 'Failed to sign in. Please try again.'
     loading.value = false
   }
 }
