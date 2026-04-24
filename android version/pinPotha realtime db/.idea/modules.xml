@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://E:\ZarData\2014-CS-284\Android Dev\fiverr-projects\AkilaProject\SeptWork\pinPotha-meritbook\android version\pinPotha realtime db\PinPotha1_0.iml" filepath="E:\ZarData\2014-CS-284\Android Dev\fiverr-projects\AkilaProject\SeptWork\pinPotha-meritbook\android version\pinPotha realtime db\PinPotha1_0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pinPotha realtime db.iml" filepath="$PROJECT_DIR$/pinPotha realtime db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pinPotha_realtime_db.iml" filepath="$PROJECT_DIR$/.idea/modules/pinPotha_realtime_db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pinPotha_realtime_db.app.unitTest.iml" />
     </modules>
   </component>
 </project>
