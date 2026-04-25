@@ -1,106 +1,51 @@
 <template>
-  <div class="flex items-center gap-4">
-    <!-- Logo SVG -->
+  <div class="flex items-center gap-3 sm:gap-4">
+    <!-- Logo Image -->
     <div class="flex-shrink-0">
-      <svg
-        width="80"
-        height="80"
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        class="logo-animation"
-      >
-        <!-- Smartphone -->
-        <rect
-          x="15"
-          y="10"
-          width="35"
-          height="60"
-          rx="4"
-          fill="#1e3a5f"
-          stroke="#152d4a"
-          stroke-width="2"
-        />
-        <!-- Phone screen -->
-        <rect
-          x="18"
-          y="15"
-          width="29"
-          height="48"
-          rx="2"
-          fill="#ffffff"
-        />
-        <!-- Home button -->
-        <circle
-          cx="32.5"
-          cy="68"
-          r="2.5"
-          fill="#1e3a5f"
-        />
-        <!-- Book emerging from phone -->
-        <g transform="translate(48, 20)">
-          <!-- Book pages (orange-yellow) -->
-          <rect
-            x="0"
-            y="0"
-            width="30"
-            height="40"
-            rx="2"
-            fill="#ff8c42"
-          />
-          <!-- Book spine (dark blue) -->
-          <rect
-            x="0"
-            y="0"
-            width="6"
-            height="40"
-            rx="2"
-            fill="#1e3a5f"
-          />
-          <!-- Book pages detail -->
-          <line
-            x1="8"
-            y1="15"
-            x2="25"
-            y2="15"
-            stroke="#ffb380"
-            stroke-width="1"
-            opacity="0.6"
-          />
-          <line
-            x1="8"
-            y1="20"
-            x2="25"
-            y2="20"
-            stroke="#ffb380"
-            stroke-width="1"
-            opacity="0.6"
-          />
-          <line
-            x1="8"
-            y1="25"
-            x2="25"
-            y2="25"
-            stroke="#ffb380"
-            stroke-width="1"
-            opacity="0.6"
-          />
-        </g>
-      </svg>
-    </div>
-    
-    <!-- Text -->
-    <div class="flex flex-col">
-      <span class="text-brand-accent font-bold text-2xl sm:text-3xl">Digital</span>
-      <span class="text-brand-accent font-bold text-xl sm:text-2xl mt-1" style="font-family: 'Noto Sans Sinhala', sans-serif;">
-        පින් පොත
-      </span>
-      <span class="text-brand-dark text-xs mt-1 opacity-70">powered by leafylanka</span>
+      <img
+        :src="logoImage"
+        alt="Digital පින් පොත Logo"
+        :class="logoSizeClass"
+        class="logo-animation w-auto object-contain"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
+// Props
+const props = defineProps({
+  size: {
+    type: String,
+    default: 'medium', // 'small', 'medium', 'large', 'xlarge'
+    validator: (value) => ['small', 'medium', 'large', 'xlarge'].includes(value)
+  }
+})
+
+// Size classes mapping
+const logoSizeClass = computed(() => {
+  const sizeMap = {
+    small: 'h-10 sm:h-12',        // 40px / 48px - for dashboard
+    medium: 'h-16 sm:h-20 md:h-24', // 64px / 80px / 96px - default
+    large: 'h-24 sm:h-32 md:h-40',  // 96px / 128px / 160px - for login
+    xlarge: 'h-32 sm:h-40 md:h-48'  // 128px / 160px / 192px - extra large
+  }
+  return sizeMap[props.size] || sizeMap.medium
+})
+
+// Import your logo image
+// Place your logo file in: src/assets/images/logo.{extension}
+// Supported formats: .png, .svg, .jpg, .jpeg, .webp
+// 
+// Update the import path below to match your logo file format:
+// - For PNG: import logoImage from '../assets/images/logo.png'
+// - For SVG: import logoImage from '../assets/images/logo.svg'
+// - For JPG: import logoImage from '../assets/images/logo.jpg'
+
+// Default: expecting logo.png - change the extension if needed
+import logoImage from '../assets/images/logo.png'
 </script>
 
 <style scoped>
@@ -117,4 +62,3 @@
   }
 }
 </style>
-

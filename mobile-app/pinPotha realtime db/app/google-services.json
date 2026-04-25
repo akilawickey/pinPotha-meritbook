@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "313883222202",
+    "firebase_url": "https://pinpotha-1295.firebaseio.com",
+    "project_id": "pinpotha-1295",
+    "storage_bucket": "pinpotha-1295.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313883222202:android:a950d816b991eb32",
+        "android_client_info": {
+          "package_name": "asak.pro.pinPotha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313883222202-73o7sgsk9h2fep9k6h3hoie1o6m3rtct.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "313883222202-pl7v3khkhqkpakvge4ea0nce1e3rjsm4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "asak.pro.pinPotha",
+            "certificate_hash": "16a4e2896d4913ab50aee2f4cc5a6e783757ad27"
+          }
+        },
+        {
+          "client_id": "313883222202-0apomepj701ole0dlhno2gm2ne0j97s7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbz7tp2TJV0xQkbaI1fkpGz3ixejiCkCA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313883222202-73o7sgsk9h2fep9k6h3hoie1o6m3rtct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

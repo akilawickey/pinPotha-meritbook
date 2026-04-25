@@ -1,0 +1,41 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ba2">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.85"
+            android:text="The ancient people has a small book called 'PIN POTHA'. Which they used to recode and memorize good things which they have done.But now this good habit has been gone from us. Most of the people use smartphones these days so i thought that if i can design a android app to this it will be close to people in our era.I hope this app will bring back that good habit to our people.
+
+This App was suggested in a Hackathon. I like to say thanks to my friends who has helped me in this Lahiru,Deshan,Ruchira,Chalaka,And Lahiru.And all people who gave me ideas... Thank You"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#250101"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/navdrawer"
+        android:layout_width="@dimen/navdrawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryDark"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:drawSelectorOnTop="false"></ListView>
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,38 +1,34 @@
-# Dependencies
+.DS_Store
+Thumbs.db
+
+# Node / JS
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+
+# Local environment files
+.env
+.env.*
+
+# Firebase / service account secrets
+firebase-service-account.json
+*.firebase.json
+
+# IDE and OS files
+.idea/
+*.iml
+.vscode/
 
 # Build outputs
+build/
 dist/
-dist-ssr/
-*.local
+out/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
-
-# Logs
-logs
-*.log
+# Android local config and generated artifacts
+**/local.properties
+**/.gradle/
+**/captures/
+**/.externalNativeBuild/
+**/app/build/
 

@@ -40,6 +40,15 @@ The application will be available at `http://localhost:3000`
 
 For more details, see the [web/README.md](web/README.md) file.
 
+## Account Deletion Email Confirmation
+
+The web app includes an account deletion flow at `Account Settings` that sends a 6-digit code by email.
+
+Email delivery is powered by [Resend](https://resend.com/). Set these environment variables before deploying functions:
+
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL` (must be a verified sender/domain in Resend, e.g. `PinPotha <no-reply@yourdomain.com>`)
+
 ## Tech Stack
 
 - **Vue 3** - Progressive JavaScript framework

@@ -4,7 +4,7 @@
       <div class="card text-center shadow-xl border-2 border-brand-accent/20">
         <!-- Logo Section -->
         <div class="mb-8 flex justify-center">
-          <Logo />
+          <Logo size="large" />
         </div>
         
         <!-- Tagline -->
@@ -41,6 +41,7 @@
 
         <!-- Error Message -->
         <p v-if="error" class="mt-4 text-red-600 text-sm bg-red-50 py-2 px-4 rounded-lg">{{ error }}</p>
+
       </div>
       
       <!-- Footer -->
@@ -48,13 +49,22 @@
         <p class="text-secondary-600 text-xs">
           Powered by <span class="font-semibold text-brand-dark">leafylanka</span>
         </p>
+        <div class="mt-3 flex items-center justify-center gap-3 text-sm">
+          <router-link to="/account" class="text-brand-accent hover:underline">
+            Delete account
+          </router-link>
+          <span class="text-secondary-400">|</span>
+          <router-link to="/privacy-policy" class="text-brand-accent hover:underline">
+            Privacy Policy
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import Logo from '../components/Logo.vue'
 
@@ -62,15 +72,22 @@ const authStore = useAuthStore()
 const loading = ref(false)
 const error = ref('')
 
+// Watch for redirect errors from auth store
+watch(() => authStore.redirectError, (newError) => {
+  if (newError) {
+    error.value = newError
+  }
+}, { immediate: true })
+
 const handleSignIn = async () => {
   try {
     loading.value = true
     error.value = ''
     await authStore.signInWithGoogle()
+    // If redirect succeeds, page will navigate away
+    // so we won't reach code below
   } catch (err) {
-    error.value = 'Failed to sign in. Please try again.'
-    console.error('Sign in error:', err)
-  } finally {
+    error.value = err.message || 'Failed to sign in. Please try again.'
     loading.value = false
   }
 }
