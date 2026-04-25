@@ -15,15 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "313883222202-73o7sgsk9h2fep9k6h3hoie1o6m3rtct.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "313883222202-pl7v3khkhqkpakvge4ea0nce1e3rjsm4.apps.googleusercontent.com",
+          "client_id": "313883222202-2idmqpeqiim15n16e51m9gvv5ugfp073.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "asak.pro.pinPotha",
-            "certificate_hash": "16a4e2896d4913ab50aee2f4cc5a6e783757ad27"
+            "certificate_hash": "7877ceb34a26ce521e8ba09d0605f36d2910ddf9"
+          }
+        },
+        {
+          "client_id": "313883222202-vj4g0kg2ehnrl28q54r9d5kgqfuvbqrf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "asak.pro.pinPotha",
+            "certificate_hash": "8158379b66d8867ae2541b078226dc84bfc8feaf"
           }
         },
         {
@@ -37,20 +41,64 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "313883222202-73o7sgsk9h2fep9k6h3hoie1o6m3rtct.apps.googleusercontent.com",
+              "client_id": "313883222202-0apomepj701ole0dlhno2gm2ne0j97s7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "313883222202-17nkajjlc333469acfn7jiie877jni0k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mood.app"
+              }
             }
           ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313883222202:android:3c6058dd460aa9c4d36283",
+        "android_client_info": {
+          "package_name": "org.leafylanka.pinpotha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313883222202-03imaq6aqsuhe6rmjnsb360ttvut6lj0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.leafylanka.pinpotha",
+            "certificate_hash": "8158379b66d8867ae2541b078226dc84bfc8feaf"
+          }
         },
-        "ads_service": {
-          "status": 2
+        {
+          "client_id": "313883222202-0apomepj701ole0dlhno2gm2ne0j97s7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbz7tp2TJV0xQkbaI1fkpGz3ixejiCkCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313883222202-0apomepj701ole0dlhno2gm2ne0j97s7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "313883222202-17nkajjlc333469acfn7jiie877jni0k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mood.app"
+              }
+            }
+          ]
         }
       }
     }

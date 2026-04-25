@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -37,6 +40,7 @@ import asak.pro.pinPotha.activities.DashboardActivity;
  */
 
 public class Utils {
+    private static final long POST_TIMEOUT_MS = 15000L;
 
     private Activity mActivity;
     private String millis;
@@ -64,10 +68,33 @@ public class Utils {
         if (intentData!=null) extras=intentData.getExtras();
         if (data != null || extras!=null) {
             mProgressDialog.show();
+            final Handler timeoutHandler = new Handler(Looper.getMainLooper());
+            final Runnable timeoutRunnable = createTimeoutRunnable(mProgressDialog);
+            timeoutHandler.postDelayed(timeoutRunnable, POST_TIMEOUT_MS);
             if (extras!=null) data=extras.getParcelable("data");
+            if (data == null) {
+                timeoutHandler.removeCallbacks(timeoutRunnable);
+                mProgressDialog.dismiss();
+                showToastMessage("Unable to read selected photo.");
+                return;
+            }
             String date="";
-            if (millis!=null)date = formatDate(new Date(Long.parseLong(millis)),"dd-MM-yyyy");
-            else date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+            if (millis!=null) {
+                try {
+                    date = formatDate(new Date(Long.parseLong(millis)),"dd-MM-yyyy");
+                } catch (NumberFormatException e) {
+                    date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+                }
+            } else date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+
+            final String userEmailKey = getUserEmailKey();
+            if (userEmailKey == null) {
+                timeoutHandler.removeCallbacks(timeoutRunnable);
+                mProgressDialog.dismiss();
+                showToastMessage("Please sign in again and try.");
+                return;
+            }
+
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             data.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte imageInByte[] = stream.toByteArray();
@@ -77,6 +104,7 @@ public class Utils {
             task.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    timeoutHandler.removeCallbacks(timeoutRunnable);
                     String downloadUrl=taskSnapshot.getDownloadUrl().toString();
                     Post post=new Post();
                     HashMap<String,Object> timeStamp=new HashMap<>();
@@ -91,7 +119,7 @@ public class Utils {
                         edtNote.setText("");
                     }
                     DatabaseReference refData= FirebaseDatabase.getInstance().getReference().child("posts")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")).child(finalDate);
+                            .child(userEmailKey).child(finalDate);
                     DatabaseReference reference1=refData.push();
                     post.setPostId(reference1.getKey());
                     reference1.setValue(post);
@@ -99,6 +127,8 @@ public class Utils {
                     showToastMessage(mActivity.getString(R.string.posted_successfully));
                     if (isFromAdd) {
                         Intent intent = new Intent(mActivity, DashboardActivity.class);
+                        String targetMillis = millis != null ? millis : String.valueOf(Calendar.getInstance().getTimeInMillis());
+                        intent.putExtra("MILLIS", targetMillis);
                         intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         mActivity.startActivity(intent);
                         mActivity.finish();
@@ -107,6 +137,7 @@ public class Utils {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    timeoutHandler.removeCallbacks(timeoutRunnable);
                     showToastMessage(mActivity.getString(R.string.something_went_wrong));
                     mProgressDialog.dismiss();
                 }
@@ -158,9 +189,26 @@ public class Utils {
 
     public void addNote(final ProgressDialog mProgressDialog, final EditText edtNote, final boolean isFromAdd) {
         mProgressDialog.show();
+        final Handler timeoutHandler = new Handler(Looper.getMainLooper());
+        final Runnable timeoutRunnable = createTimeoutRunnable(mProgressDialog);
+        timeoutHandler.postDelayed(timeoutRunnable, POST_TIMEOUT_MS);
         String date="";
-        if (millis!=null)date = formatDate(new Date(Long.parseLong(millis)),"dd-MM-yyyy");
-        else date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+        if (millis!=null) {
+            try {
+                date = formatDate(new Date(Long.parseLong(millis)),"dd-MM-yyyy");
+            } catch (NumberFormatException e) {
+                date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+            }
+        } else date = formatDate(new Date(Calendar.getInstance().getTimeInMillis()),"dd-MM-yyyy");
+
+        String userEmailKey = getUserEmailKey();
+        if (userEmailKey == null) {
+            timeoutHandler.removeCallbacks(timeoutRunnable);
+            mProgressDialog.dismiss();
+            showToastMessage("Please sign in again and try.");
+            return;
+        }
+
         Post post=new Post();
         post.setNote(edtNote.getText().toString());
 
@@ -169,12 +217,13 @@ public class Utils {
         else timeStamp.put("server_time",ServerValue.TIMESTAMP);
         post.setTimeStamp(timeStamp);
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("posts")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")).child(date);
+                .child(userEmailKey).child(date);
         DatabaseReference reference1=reference.push();
         post.setPostId(reference1.getKey());
         reference1.setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                timeoutHandler.removeCallbacks(timeoutRunnable);
                 mProgressDialog.dismiss();
                 showToastMessage(mActivity.getString(R.string.posted_successfully));
                 InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -182,6 +231,8 @@ public class Utils {
                 edtNote.setText("");
                 if (isFromAdd) {
                     Intent intent = new Intent(mActivity, DashboardActivity.class);
+                    String targetMillis = millis != null ? millis : String.valueOf(Calendar.getInstance().getTimeInMillis());
+                    intent.putExtra("MILLIS", targetMillis);
                     intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
                     mActivity.startActivity(intent);
                    mActivity.finish();
@@ -190,6 +241,7 @@ public class Utils {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                timeoutHandler.removeCallbacks(timeoutRunnable);
                 mProgressDialog.dismiss();
                 showToastMessage(mActivity.getString(R.string.something_went_wrong));
             }
@@ -199,6 +251,26 @@ public class Utils {
     public String formatDate(Date date, String type) {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat(type);
         return simpleDateFormat.format(date);
+    }
+
+    private String getUserEmailKey() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || user.getEmail() == null) {
+            return null;
+        }
+        return user.getEmail().replace(".", ",");
+    }
+
+    private Runnable createTimeoutRunnable(final ProgressDialog progressDialog) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    showToastMessage("Request timed out. Please check internet and try again.");
+                }
+            }
+        };
     }
 
     public static Bitmap decodeUri(Context c, Uri uri, final int requiredSize)

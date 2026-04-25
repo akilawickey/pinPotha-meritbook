@@ -1,159 +1,154 @@
 package asak.pro.pinPotha.activities;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
+
 import asak.pro.pinPotha.R;
-import asak.pro.pinPotha.adapters.CustomRecyclerView;
-import asak.pro.pinPotha.adapters.PostsAdapter;
-import asak.pro.pinPotha.adapters.PostsViewHolder;
-import asak.pro.pinPotha.models.Post;
 import asak.pro.pinPotha.models.Utils;
 
 public class PostListActivity extends AppCompatActivity {
-    private FirebaseRecyclerAdapter adapter;
-    private CustomRecyclerView recyclerView;
     private String date;
-    private boolean isFabOpen=false;
-    private FloatingActionButton fab;
-    private Animation rotate_backward,rotate_forward;
-    private RelativeLayout addLayout;
     private EditText edtNote;
     private Utils mUtils;
     private ProgressDialog mProgressDialog;
-    private boolean isCameraOption=false;
+    private boolean isCameraOption = false;
+    private TextView selectedDateText;
+    private ImageView previewImage;
+    private Bitmap selectedImageBitmap;
+    private long selectedDateMillis;
+
     private static final int CAMERA_REQUEST = 1;
     private static final int PICK_FROM_GALLERY = 2;
     private static final int MY_PERMISSIONS_REQUEST_READ_CAMERA = 3;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTENT = 4 ;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTENT = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
-        date=getIntent().getStringExtra("MILLIS");
-        mUtils=new Utils(this,date);
-        setTitle(mUtils.formatDate(new Date(Long.parseLong(date)),"dd-MM-yyyy"));
-        recyclerView=findViewById(R.id.recycler_view);
-        recyclerView.setEmptyView(findViewById(R.id.empty_view));
-        setUpPostList();
-        addLayout=findViewById(R.id.r);
-        fab=findViewById(R.id.fab);
-        rotate_forward = AnimationUtils.loadAnimation(this,R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(this,R.anim.rotate_backward);
-        fab.setOnClickListener(new View.OnClickListener() {
+        date = getIntent().getStringExtra("MILLIS");
+        if (date == null) {
+            date = String.valueOf(Calendar.getInstance().getTimeInMillis());
+        }
+        selectedDateMillis = Long.parseLong(date);
+        mUtils = new Utils(this, date);
+        setTitle("Add Good Thought");
+
+        selectedDateText = findViewById(R.id.txt_selected_date);
+        previewImage = findViewById(R.id.img_preview);
+        edtNote = findViewById(R.id.edt_note);
+        Button btnGallery = findViewById(R.id.btn_gallery);
+        Button btnCamera = findViewById(R.id.btn_camera);
+        Button btnPost = findViewById(R.id.btn_post);
+
+        updateSelectedDateView();
+        selectedDateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                animateFAB();
+                openDatePicker();
             }
         });
-        edtNote=findViewById(R.id.edt_note);
-        Button btnAdd=findViewById(R.id.btn_add);
-        mProgressDialog=new ProgressDialog(this);
+
+        mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Posting...");
         mProgressDialog.setTitle("Loading...");
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+
+        btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPostsDialog();
+                isCameraOption = false;
+                storagePermissionCheck();
+            }
+        });
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isCameraOption = true;
+                cameraPermissionCheck();
+            }
+        });
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postGoodThought();
             }
         });
     }
 
-    private void setUpPostList() {
-        DatabaseReference reference= FirebaseDatabase.getInstance().getReference()
-                .child("posts")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","))
-                .child(mUtils.formatDate(new Date(Long.parseLong(date)),"dd-MM-yyyy"));
-        adapter=new PostsAdapter(Post.class,R.layout.post_list_item,PostsViewHolder.class,reference);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+    private void updateSelectedDateView() {
+        selectedDateText.setText(mUtils.formatDate(new Date(selectedDateMillis), "yyyy-MM-dd"));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        adapter.cleanup();
+    private void openDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(selectedDateMillis);
+        DatePickerDialog pickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                        Calendar picked = Calendar.getInstance();
+                        picked.set(Calendar.YEAR, year);
+                        picked.set(Calendar.MONTH, month);
+                        picked.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        selectedDateMillis = picked.getTimeInMillis();
+                        date = String.valueOf(selectedDateMillis);
+                        mUtils = new Utils(PostListActivity.this, date);
+                        updateSelectedDateView();
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        pickerDialog.show();
     }
 
-    public void animateFAB(){
-
-        if(isFabOpen){
-            fab.startAnimation(rotate_backward);
-            addLayout.setVisibility(View.GONE);
-            isFabOpen = false;
+    private void postGoodThought() {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection. Please connect and try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (selectedImageBitmap != null) {
+            mUtils.postWithPhoto(selectedImageBitmap, edtNote, mProgressDialog, null, true);
+            return;
+        }
+        if (edtNote.getText().toString().trim().length() > 0) {
+            mUtils.addNote(mProgressDialog, edtNote, true);
         } else {
-            fab.startAnimation(rotate_forward);
-            addLayout.setVisibility(View.VISIBLE);
-            isFabOpen = true;
+            edtNote.setError(getString(R.string.please_type_good_work));
+            Toast.makeText(this, "Add note or photo before posting", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void showPostsDialog() {
-        final String[] option = new String[]{"Take a Note", "Get From Camera",
-                "Get From the Phone"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.select_dialog_item, option);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Select Option");
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-
-
-                    if (edtNote.getText().toString().trim().length() > 0) {
-                        mUtils.addNote(mProgressDialog,edtNote,true);
-                    } else {
-                        /*AlertDialog alert = new AlertDialog.Builder(DashboardActivity.this).create();
-                        alert.setMessage("Please Type Some good work !!!");
-                        alert.show();*/
-                        edtNote.setError(getString(R.string.please_type_good_work));
-                    }
-                }
-
-                if (which == 1) {
-                    isCameraOption=true;
-                    cameraPermissionCheck();
-                }
-                if (which == 2) {
-                    isCameraOption=false;
-                    cameraPermissionCheck();
-                }
-
-            }
-
-        });
-        builder.show();
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            return false;
+        }
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     @Override
@@ -163,7 +158,13 @@ public class PostListActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case CAMERA_REQUEST:
-                mUtils.postWithPhoto(null,edtNote,mProgressDialog,data,true);
+                if (data != null && data.getExtras() != null) {
+                    selectedImageBitmap = data.getExtras().getParcelable("data");
+                    if (selectedImageBitmap != null) {
+                        previewImage.setVisibility(View.VISIBLE);
+                        previewImage.setImageBitmap(selectedImageBitmap);
+                    }
+                }
                 break;
 
             case PICK_FROM_GALLERY:
@@ -172,7 +173,9 @@ public class PostListActivity extends AppCompatActivity {
                     final Bitmap selectedImage;
                     try {
                         selectedImage = mUtils.decodeUri(this,extras2,100);
-                        mUtils.postWithPhoto(selectedImage,edtNote,mProgressDialog,null,true);
+                        selectedImageBitmap = selectedImage;
+                        previewImage.setVisibility(View.VISIBLE);
+                        previewImage.setImageBitmap(selectedImageBitmap);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -189,21 +192,23 @@ public class PostListActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA},
                     MY_PERMISSIONS_REQUEST_READ_CAMERA);
         } else {
-            storagePermissionCheck();
+            mUtils.callCamera();
         }
     }
 
     public void storagePermissionCheck() {
+        String storagePermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ? Manifest.permission.READ_MEDIA_IMAGES
+                : Manifest.permission.READ_EXTERNAL_STORAGE;
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                storagePermission)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{storagePermission},
                     MY_PERMISSIONS_REQUEST_READ_CONTENT);
 
         } else {
-            if (isCameraOption)mUtils.callCamera();
-            else mUtils.callGallery();
+            mUtils.callGallery();
         }
     }
 
@@ -214,7 +219,7 @@ public class PostListActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_READ_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    storagePermissionCheck();
+                    mUtils.callCamera();
 
                 }
                 return;
@@ -222,8 +227,7 @@ public class PostListActivity extends AppCompatActivity {
             }
             case MY_PERMISSIONS_REQUEST_READ_CONTENT: {
                 if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (isCameraOption)mUtils.callCamera();
-                    else mUtils.callGallery();
+                    mUtils.callGallery();
                 }
                 break;
             }

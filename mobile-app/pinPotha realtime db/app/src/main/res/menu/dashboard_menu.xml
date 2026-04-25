@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_view_good_things"
+        android:title="View Good Things"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_profile"
+        android:title="Profile"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout"
+        android:title="Logout"
+        android:showAsAction="never" />
+</menu>

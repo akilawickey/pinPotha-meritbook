@@ -1,62 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="@color/colorGray"
-    tools:context="asak.pro.pinPotha.activities.PostListActivity">
-    <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/r"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/edt_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="4"
-            android:gravity="top"
-            android:padding="5dp"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/round_button"
-            android:elevation="5dp"
-            android:layout_margin="10dp"
-            android:hint="@string/label_note" />
-        <Button
-            android:elevation="5dp"
-            style="@style/ButtonCustome"
-            android:textColor="@android:color/white"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+    android:background="@color/colorGray">
 
-            android:text="@string/add"
-            android:layout_below="@id/edt_note"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_add" />
-    </RelativeLayout>
-    <asak.pro.pinPotha.adapters.CustomRecyclerView
-        android:layout_marginTop="5dp"
-        android:id="@+id/recycler_view"
-        android:layout_below="@id/r"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></asak.pro.pinPotha.adapters.CustomRecyclerView>
-    <TextView
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No Event Found"
-        android:textSize="20sp" />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="15dp"
-        android:src="@drawable/ic_add_black_24dp"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+            android:background="@drawable/bg_surface_card"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select Date"
+                android:textColor="@color/textPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_selected_date"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_soft_input"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:textColor="@color/textPrimary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Your Good Thought"
+                android:textColor="@color/textPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edt_note"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_soft_input"
+                android:gravity="top"
+                android:hint="Type your good thing here..."
+                android:inputType="textMultiLine"
+                android:padding="12dp"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textSecondary" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Add Photo (Optional)"
+                android:textColor="@color/textPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_outline_button"
+                    android:text="Choose from Gallery"
+                    android:textAllCaps="false"
+                    android:textColor="@color/textPrimary" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/btn_camera"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_outline_button"
+                    android:text="Take Photo"
+                    android:textAllCaps="false"
+                    android:textColor="@color/textPrimary" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_preview"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginTop="12dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/bg_soft_input"
+                android:scaleType="centerCrop"
+                android:src="@drawable/picture"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_post"
+                style="@style/ButtonCustome"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="14dp"
+                android:text="Post Good Thought"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
