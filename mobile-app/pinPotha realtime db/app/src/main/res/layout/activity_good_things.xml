@@ -1,39 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:background="@color/colorGray">
 
-    <EditText
-        android:id="@+id/edt_search"
+    <LinearLayout
+        android:id="@+id/good_things_content"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_soft_input"
-        android:hint="Search by note or date (dd-MM-yyyy)"
-        android:imeOptions="actionSearch"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:singleLine="true"
-        android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <asak.pro.pinPotha.adapters.CustomRecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1" />
+        <EditText
+            android:id="@+id/edt_search"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_soft_input"
+            android:hint="Search by note or date (dd-MM-yyyy)"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:singleLine="true"
+            android:textColor="@color/textPrimary"
+            android:textColorHint="@color/textSecondary" />
 
-    <TextView
-        android:id="@+id/empty_view"
+        <asak.pro.pinPotha.adapters.CustomRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="No good things found"
+            android:textColor="@color/textSecondary"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="No good things found"
-        android:textColor="@color/textSecondary"
-        android:textSize="16sp"
-        android:visibility="gone" />
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        app:itemIconTint="@color/colorPrimary"
+        app:itemTextColor="@color/colorPrimary"
+        app:menu="@menu/bottom_nav_menu" />
 
-</LinearLayout>
+</RelativeLayout>

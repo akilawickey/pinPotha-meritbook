@@ -43,6 +43,10 @@
             android:name=".activities.GoodThingsActivity"
             android:parentActivityName=".activities.DashboardActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:parentActivityName=".activities.DashboardActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.AddActivity"></activity>
     </application>
 

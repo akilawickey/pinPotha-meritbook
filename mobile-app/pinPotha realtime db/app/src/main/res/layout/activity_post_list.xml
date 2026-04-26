@@ -1,126 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGray">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/post_list_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="14dp">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_surface_card"
-            android:elevation="2dp"
             android:orientation="vertical"
             android:padding="14dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Select Date"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_selected_date"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_soft_input"
-                android:gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:textColor="@color/textPrimary"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Your Good Thought"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/edt_note"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_soft_input"
-                android:gravity="top"
-                android:hint="Type your good thing here..."
-                android:inputType="textMultiLine"
-                android:padding="12dp"
-                android:textColor="@color/textPrimary"
-                android:textColorHint="@color/textSecondary" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Add Photo (Optional)"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:background="@drawable/bg_surface_card"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Date"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_selected_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_soft_input"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Your Good Thought"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edt_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_soft_input"
+                    android:gravity="top"
+                    android:hint="Type your good thing here..."
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/textSecondary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Add Photo (Optional)"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_gallery"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_outline_button"
+                        android:text="Choose from Gallery"
+                        android:textAllCaps="false"
+                        android:textColor="@color/textPrimary" />
+
+                    <Space
+                        android:layout_width="10dp"
+                        android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/btn_camera"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_outline_button"
+                        android:text="Take Photo"
+                        android:textAllCaps="false"
+                        android:textColor="@color/textPrimary" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/img_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/bg_soft_input"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/picture"
+                    android:visibility="gone" />
 
                 <Button
-                    android:id="@+id/btn_gallery"
-                    android:layout_width="0dp"
+                    android:id="@+id/btn_post"
+                    style="@style/ButtonCustome"
+                    android:layout_width="match_parent"
                     android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_outline_button"
-                    android:text="Choose from Gallery"
+                    android:layout_marginTop="14dp"
+                    android:text="Post Good Thought"
                     android:textAllCaps="false"
-                    android:textColor="@color/textPrimary" />
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="1dp" />
-
-                <Button
-                    android:id="@+id/btn_camera"
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_outline_button"
-                    android:text="Take Photo"
-                    android:textAllCaps="false"
-                    android:textColor="@color/textPrimary" />
+                    android:textColor="@android:color/white" />
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/img_preview"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:layout_marginTop="12dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/bg_soft_input"
-                android:scaleType="centerCrop"
-                android:src="@drawable/picture"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/btn_post"
-                style="@style/ButtonCustome"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="14dp"
-                android:text="Post Good Thought"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white" />
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        app:itemIconTint="@color/colorPrimary"
+        app:itemTextColor="@color/colorPrimary"
+        app:menu="@menu/bottom_nav_menu" />
+</RelativeLayout>

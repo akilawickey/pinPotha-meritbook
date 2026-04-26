@@ -115,6 +115,7 @@ public class DashboardActivity extends AppCompatActivity {
                 selectedDayStartMillis = normalizeDay(dateClicked.getTime());
                 calendarDisplayMillis = selectedDayStartMillis;
                 selectedDayText.setText("Selected: " + dayLabelFormat.format(new Date(selectedDayStartMillis)));
+                showGoodThingsForSelectedDay();
             }
 
             @Override
@@ -187,12 +188,8 @@ public class DashboardActivity extends AppCompatActivity {
                     startActivity(new Intent(DashboardActivity.this, GoodThingsActivity.class));
                     return true;
                 }
-                if (item.getItemId() == R.id.nav_menu) {
-                    if (toolbar != null) {
-                        toolbar.showOverflowMenu();
-                    } else {
-                        openOptionsMenu();
-                    }
+                if (item.getItemId() == R.id.nav_settings) {
+                    startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));
                     return true;
                 }
                 return false;
@@ -260,6 +257,50 @@ public class DashboardActivity extends AppCompatActivity {
                 compactCalendarView.addEvent(new Event(getResources().getColor(R.color.colorPrimaryDark), dayMillis + 1));
             }
         }
+    }
+
+    private void showGoodThingsForSelectedDay() {
+        List<Post> dayPosts = new ArrayList<>();
+        for (Post post : allPosts) {
+            if (normalizeDay(getTimestamp(post)) == selectedDayStartMillis) {
+                dayPosts.add(post);
+            }
+        }
+
+        if (dayPosts.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(dayLabelFormat.format(new Date(selectedDayStartMillis)))
+                    .setMessage("No good things recorded for this day yet.")
+                    .setPositiveButton("Add Good Thing", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            openAddScreenForSelectedDate();
+                        }
+                    })
+                    .setNegativeButton("Close", null)
+                    .show();
+            return;
+        }
+
+        String[] notes = new String[dayPosts.size()];
+        for (int i = 0; i < dayPosts.size(); i++) {
+            String note = dayPosts.get(i).getNote();
+            if (note == null || note.trim().equals("")) {
+                notes[i] = (i + 1) + ". (No note text)";
+            } else {
+                String trimmed = note.trim();
+                if (trimmed.length() > 70) {
+                    trimmed = trimmed.substring(0, 70) + "...";
+                }
+                notes[i] = (i + 1) + ". " + trimmed;
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Good things on " + dayLabelFormat.format(new Date(selectedDayStartMillis)))
+                .setItems(notes, null)
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private long normalizeDay(long millis) {
@@ -334,7 +375,7 @@ public class DashboardActivity extends AppCompatActivity {
             showProfileDialog();
             return true;
         } else if (item.getItemId() == R.id.action_settings) {
-            Toast.makeText(this, "Settings will be available soon.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(DashboardActivity.this, SettingsActivity.class));
             return true;
         } else if (item.getItemId() == R.id.action_logout) {
             new AlertDialog.Builder(this)

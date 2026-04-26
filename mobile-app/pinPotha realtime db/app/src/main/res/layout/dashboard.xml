@@ -19,9 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="@dimen/home_spacing_xl"
+        android:layout_marginTop="@dimen/home_spacing_lg"
+        android:layout_marginRight="@dimen/home_spacing_xl"
         android:orientation="horizontal">
 
         <Button
@@ -34,7 +34,7 @@
             android:textColor="@android:color/white" />
 
         <Space
-            android:layout_width="8dp"
+            android:layout_width="@dimen/home_spacing_md"
             android:layout_height="1dp" />
 
         <Button
@@ -52,13 +52,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/action_row"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/home_spacing_xl"
+        android:layout_marginRight="@dimen/home_spacing_xl"
+        android:layout_marginTop="@dimen/home_spacing_lg"
         android:background="@drawable/bg_surface_card"
         android:elevation="2dp"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="@dimen/home_spacing_lg">
 
         <TextView
             android:id="@+id/txt_calendar_month"
@@ -72,7 +72,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/home_spacing_md"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -88,7 +88,7 @@
                 android:textSize="12sp" />
 
             <Space
-                android:layout_width="6dp"
+                android:layout_width="@dimen/home_spacing_sm"
                 android:layout_height="1dp" />
 
             <Button
@@ -103,7 +103,7 @@
                 android:textSize="12sp" />
 
             <Space
-                android:layout_width="8dp"
+                android:layout_width="@dimen/home_spacing_md"
                 android:layout_height="1dp" />
 
             <Button
@@ -118,7 +118,7 @@
                 android:textSize="12sp" />
 
             <Space
-                android:layout_width="6dp"
+                android:layout_width="@dimen/home_spacing_sm"
                 android:layout_height="1dp" />
 
             <Button
@@ -136,7 +136,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/home_spacing_md"
             android:text="Track your daily good things"
             android:textColor="@color/textSecondary"
             android:textSize="12sp" />
@@ -144,7 +144,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/home_spacing_lg"
             android:orientation="horizontal">
 
             <TextView
@@ -222,7 +222,7 @@
             android:id="@+id/compact_calendar"
             android:layout_width="match_parent"
             android:layout_height="280dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/home_spacing_sm"
             app:compactCalendarBackgroundColor="@android:color/white"
             app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimary"
             app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimaryDark"
@@ -232,7 +232,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/home_spacing_sm"
             android:orientation="horizontal">
 
             <TextView
@@ -249,8 +249,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/calendar_container"
-        android:layout_marginLeft="14dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/home_spacing_xl"
+        android:layout_marginTop="@dimen/home_spacing_md"
         android:background="@drawable/bg_chip_soft"
         android:paddingLeft="12dp"
         android:paddingTop="6dp"

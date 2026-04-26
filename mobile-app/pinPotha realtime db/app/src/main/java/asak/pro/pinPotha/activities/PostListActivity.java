@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -93,6 +94,36 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 postGoodThought();
+            }
+        });
+        setUpBottomNavigation();
+    }
+
+    private void setUpBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_add);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(android.view.MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_add) {
+                    return true;
+                }
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(PostListActivity.this, DashboardActivity.class);
+                    intent.putExtra("MILLIS", String.valueOf(selectedDateMillis));
+                    startActivity(intent);
+                    return true;
+                }
+                if (itemId == R.id.nav_view) {
+                    startActivity(new Intent(PostListActivity.this, GoodThingsActivity.class));
+                    return true;
+                }
+                if (itemId == R.id.nav_settings) {
+                    startActivity(new Intent(PostListActivity.this, SettingsActivity.class));
+                    return true;
+                }
+                return false;
             }
         });
     }

@@ -1,6 +1,8 @@
 package asak.pro.pinPotha.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,7 +75,37 @@ public class GoodThingsActivity extends AppCompatActivity {
             }
         });
 
+        setUpBottomNavigation();
         subscribePosts();
+    }
+
+    private void setUpBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(android.view.MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_view) {
+                    return true;
+                }
+                if (itemId == R.id.nav_home) {
+                    startActivity(new Intent(GoodThingsActivity.this, DashboardActivity.class));
+                    return true;
+                }
+                if (itemId == R.id.nav_add) {
+                    Intent intent = new Intent(GoodThingsActivity.this, PostListActivity.class);
+                    intent.putExtra("MILLIS", String.valueOf(Calendar.getInstance().getTimeInMillis()));
+                    startActivity(intent);
+                    return true;
+                }
+                if (itemId == R.id.nav_settings) {
+                    startActivity(new Intent(GoodThingsActivity.this, SettingsActivity.class));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void subscribePosts() {

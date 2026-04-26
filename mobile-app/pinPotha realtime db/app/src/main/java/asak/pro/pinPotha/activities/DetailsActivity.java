@@ -2,6 +2,7 @@ package asak.pro.pinPotha.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +56,39 @@ public class DetailsActivity extends AppCompatActivity {
             postImage.setVisibility(View.GONE);
             updateNoteText(post.getNote());
         }
+        setUpBottomNavigation();
+    }
+
+    private void setUpBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(android.view.MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.nav_view) {
+                    startActivity(new Intent(DetailsActivity.this, GoodThingsActivity.class));
+                    return true;
+                }
+                if (itemId == R.id.nav_home) {
+                    Intent intent = new Intent(DetailsActivity.this, DashboardActivity.class);
+                    intent.putExtra("MILLIS", String.valueOf(date.getTime()));
+                    startActivity(intent);
+                    return true;
+                }
+                if (itemId == R.id.nav_add) {
+                    Intent intent = new Intent(DetailsActivity.this, PostListActivity.class);
+                    intent.putExtra("MILLIS", String.valueOf(date.getTime()));
+                    startActivity(intent);
+                    return true;
+                }
+                if (itemId == R.id.nav_settings) {
+                    startActivity(new Intent(DetailsActivity.this, SettingsActivity.class));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
