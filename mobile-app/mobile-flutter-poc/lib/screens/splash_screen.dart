@@ -1,42 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/auth_provider.dart';
 import 'sign_in_screen.dart';
-import 'dashboard_screen.dart';
+import 'app_shell.dart';
+import '../services/post_service.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
+  final PostRepository? repository;
+  const SplashScreen({super.key, this.repository});
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, _) {
-        if (authProvider.loading) {
-          return Scaffold(
+    final auth = context.watch<AuthProvider>();
+    if (auth.user != null) {
+      final email = auth.user!.email;
+      if (email == null || email.isEmpty) {
+        return Scaffold(
             body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/logo.svg',
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(height: 24),
-                  const CircularProgressIndicator(),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return authProvider.isAuthenticated
-            ? const DashboardScreen()
-            : const SignInScreen();
-      },
-    );
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const Text(
+              'This account has no email address. Please use Google sign-in.'),
+          TextButton(onPressed: auth.signOut, child: const Text('Sign out')),
+        ])));
+      }
+      return AuthenticatedApp(
+          key: ValueKey('${auth.user!.uid}:$email'),
+          email: email,
+          repository: repository);
+    }
+    if (auth.initializing) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    return const SignInScreen();
   }
 }
-

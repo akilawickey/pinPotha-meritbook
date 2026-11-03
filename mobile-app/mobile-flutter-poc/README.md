@@ -1,182 +1,145 @@
-# PinPotha iOS App
+# PinPotha for Android and iOS
 
-A Flutter iOS application for recording and remembering good thoughts - a digital version of the traditional "Pin Potha" (පින් පොත).
+Flutter migration of the native PinPotha Realtime Database app. Uses the existing
+Firebase project and data; no bulk copy or schema migration is required.
 
 ## Features
 
-- ✅ Google Sign-In authentication
-- ✅ Create, edit, and delete posts (good thoughts)
-- ✅ Add photos from gallery or camera
-- ✅ View all posts in a beautiful grid layout
-- ✅ Search functionality
-- ✅ Pagination support
-- ✅ Pull-to-refresh
-- ✅ View posts by date
-- ✅ Share posts
-- ✅ Offline support with Firebase Realtime Database
-- ✅ Bottom navigation for mobile
-- ✅ Drawer menu
+- Google sign-in, profile, logout and account isolation.
+- Home calendar with month/year navigation and indicators for one/multiple posts.
+- Selected-day browsing and creation; note, camera photo, gallery photo, or both.
+- View grid with note/date search, working page-size selection and display pagination.
+- Details, note-only editing, confirmed deletion and note/photo-link sharing.
+- Home / Add / View / Settings tabs; settings reads the installed version/build.
+- One shared live post subscription per signed-in account.
 
-## Prerequisites
+Editing deliberately changes only the note, matching the native Android app. Date
+and photo editing are disabled. Updates and deletion address the original saved
+date bucket, independent of timestamp display or device timezone. Historical numeric
+and string timestamps are supported. Invalid timestamps use the saved bucket date
+and are visibly marked; malformed bucket structure produces an explicit read error.
 
-- Flutter SDK (>=3.0.0)
-- Xcode (for iOS development)
-- CocoaPods
-- Firebase project setup
-- Google Sign-In configuration
+## Toolchain and platforms
 
-## Setup Instructions
+Validated SDK: Flutter 3.35.6 / Dart 3.9.2. Android host: Gradle 8.12, AGP 8.9.1,
+Kotlin 2.1.0, JDK 17; compile/target SDK come from this Flutter SDK. Android minimum
+API is **24** (Android 7), required by the resolved image picker. This excludes older
+devices supported by the Java application's minSdk 16. iOS deployment target is 13.
+Check device distribution and current store requirements before release.
 
-### 1. Install Flutter Dependencies
+Dependencies are locked; avoid upgrading the whole Firebase/plugin stack during
+migration. `share_plus` was updated to 10.1.4 and `package_info_plus` 8.3.1 added.
 
-```bash
-cd mobile
+## Setup
+
+From `mobile-app/mobile-flutter-poc`:
+
+```sh
 flutter pub get
-```
-
-### 2. Firebase Configuration
-
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project (pinpotha-1295)
-3. Add an iOS app:
-   - Click "Add app" → iOS
-   - Bundle ID: `com.leafylanka.pinpotha`
-   - Download `GoogleService-Info.plist`
-
-4. Place `GoogleService-Info.plist` in:
-   ```
-   mobile/ios/Runner/GoogleService-Info.plist
-   ```
-
-### 3. iOS Configuration
-
-1. Open `mobile/ios/Runner.xcworkspace` in Xcode
-2. Update the Bundle Identifier to `com.leafylanka.pinpotha`
-3. Configure Google Sign-In:
-   - In Xcode, go to Runner → Signing & Capabilities
-   - Add "Background Modes" capability
-   - Add URL Scheme: Add your reversed client ID from `GoogleService-Info.plist`
-     - Find `REVERSED_CLIENT_ID` in `GoogleService-Info.plist`
-     - Add it as a URL Scheme in Xcode
-
-4. Update `Info.plist`:
-   ```xml
-   <key>CFBundleURLTypes</key>
-   <array>
-     <dict>
-       <key>CFBundleTypeRole</key>
-       <string>Editor</string>
-       <key>CFBundleURLSchemes</key>
-       <array>
-         <string>YOUR_REVERSED_CLIENT_ID</string>
-       </array>
-     </dict>
-   </array>
-   ```
-
-### 4. Install CocoaPods Dependencies
-
-```bash
-cd mobile/ios
-pod install
-cd ../..
-```
-
-### 5. Run the App
-
-```bash
+python3 tool/restore_ios_firebase_config.py
 flutter run
 ```
 
-Or open in Xcode and run from there.
+The iOS helper restores the ignored `ios/Runner/GoogleService-Info.plist` from
+checked-in Firebase options and validates the Google URL scheme. It preserves an
+existing file. Compare it with the actual download from Firebase Console before
+release; reconstructing a plist does not verify live OAuth configuration. Open
+`ios/Runner.xcworkspace` for signing and device builds.
 
-## Project Structure
+Android uses `asak.pro.pinPotha` from the existing native application's source and
+`android/app/google-services.json` from that app. The iOS bundle is
+`com.leafylanka.pinpotha`. Confirm both against the actual store/Firebase apps.
+Register debug and Play app-signing certificate fingerprints for Google login;
+a working debug login alone does not validate a Play-installed build.
 
-```
-mobile/
-├── lib/
-│   ├── main.dart                 # App entry point
-│   ├── firebase_options.dart      # Firebase configuration
-│   ├── models/
-│   │   └── post.dart             # Post data model
-│   ├── providers/
-│   │   └── auth_provider.dart    # Authentication state management
-│   ├── screens/
-│   │   ├── splash_screen.dart    # Initial loading screen
-│   │   ├── sign_in_screen.dart   # Google Sign-In
-│   │   ├── dashboard_screen.dart # Main posts grid
-│   │   ├── add_post_screen.dart  # Create/Edit post
-│   │   ├── post_details_screen.dart # View post details
-│   │   └── post_list_screen.dart # Posts by date
-│   ├── services/
-│   │   └── post_service.dart     # Firebase operations
-│   ├── utils/
-│   │   ├── date_utils.dart       # Date formatting
-│   │   └── post_utils.dart       # Post utilities
-│   └── widgets/
-│       ├── bottom_navigation.dart # Bottom nav bar
-│       └── mobile_drawer.dart    # Side drawer menu
-├── ios/                          # iOS native configuration
-└── pubspec.yaml                  # Dependencies
+## Data and offline behavior
+
+```text
+posts/{email.replace('.', ',')}/{dd-MM-yyyy}/{postId}
+  postId, note?, photoUrl?, timeStamp/server_time
+photos/{objectId}
 ```
 
-## Firebase Setup
+Existing rules and web/native consumers are retained. Posts keep the source date
+key in memory, without introducing a new persisted field. Calendar dots and day
+lists use the same display-date grouping. Pagination limits displayed cards, not
+database downloads; the full account tree is subscribed once.
 
-The app uses the same Firebase project as the web version:
-- Project ID: `pinpotha-1295`
-- Database: Realtime Database
-- Storage: Firebase Storage
-- Authentication: Google Sign-In
+New saves require a database connection. A dropped connection during an existing
+write may leave it pending: keep the app/screen open until it finishes. Repeated
+taps cannot duplicate a save. Rejected saves retain a frozen draft, uploaded photo,
+and post ID; Retry sends the same payload. Discard cleans up an unreferenced upload.
+Pending operations prevent leaving the form or signing out. Tabs preserve the Add
+draft; leaving a routed form confirms discard. Drafts and cleanup retries are
+**in-session only** and are lost on app termination. Disk persistence, durable offline
+photo uploads, date/photo editing, and automatic background cleanup are not enabled.
 
-## Key Dependencies
+Deleting the record and cleaning up its photo are separate operations. A successful
+record deletion is not reported as failed if photo removal fails; Settings exposes
+photo cleanup retry. Failed cleanup can remain after closing/signing out; review a
+server-managed cleanup queue separately if durable guarantees are required.
 
-- `firebase_core` - Firebase initialization
-- `firebase_auth` - Authentication
-- `firebase_database` - Realtime Database
-- `firebase_storage` - File storage
-- `google_sign_in` - Google Sign-In
-- `provider` - State management
-- `image_picker` - Image selection
-- `cached_network_image` - Image caching
-- `pull_to_refresh` - Pull-to-refresh functionality
-- `share_plus` - Share functionality
+## Checks
 
-## Building for Production
+From the Flutter folder:
 
-### iOS Release Build
+```sh
+flutter analyze
+flutter test --reporter expanded
+flutter build apk --debug
+flutter build ios --release --no-codesign
+```
 
-1. Update version in `pubspec.yaml`
-2. Build the app:
-   ```bash
-   flutter build ios --release
-   ```
-3. Archive in Xcode:
-   - Open `ios/Runner.xcworkspace`
-   - Product → Archive
-   - Distribute App
+Tests cover legacy payloads, source-path writes, retry identity, upload/save failure,
+cleanup recovery, auth/navigation/account switching, date search, selected-day
+creation, retained drafts and pagination boundaries. Widget tests inject a fake
+repository and authentication stream; they do not use production Firebase.
 
-## Troubleshooting
+From the **repository root**, run the actual database rules in isolated emulators:
 
-### Google Sign-In Issues
-- Ensure `GoogleService-Info.plist` is in the correct location
-- Verify URL Scheme is configured in `Info.plist`
-- Check that the Bundle ID matches Firebase configuration
+```sh
+firebase emulators:exec --only auth,database --project demo-pinpotha \
+  --config firebase.migration-test.json \
+  'node mobile-app/mobile-flutter-poc/test/firebase/rules_test.mjs'
+```
 
-### Firebase Connection Issues
-- Verify Firebase project settings
-- Check network connectivity
-- Ensure Firebase rules allow read/write access
+Requires Firebase CLI, Node with `fetch`, and Java. The test script hardcodes localhost
+and the demo namespace, with no production fallback. It checks own-user access,
+cross-user/anonymous denial, post ID validation, note preservation and deletion.
+It does not test deployed rules, Storage rules, Google OAuth, camera hardware or
+store upgrade compatibility. See [release-checklist.md](release-checklist.md).
 
-### Image Picker Issues
-- Add camera and photo library permissions to `Info.plist`:
-  ```xml
-  <key>NSCameraUsageDescription</key>
-  <string>We need access to your camera to take photos for your good thoughts.</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>We need access to your photo library to select images for your good thoughts.</string>
-  ```
+## Release signing
 
-## License
+`pubspec.yaml` remains `1.0.0+1` until the live version is verified. For an update,
+supply a build name and build number greater than the highest uploaded store build;
+native source code 17 is only a historical reference.
 
-This project is part of the PinPotha application suite.
+Create ignored `android/key.properties` with the existing authorized upload/signing
+credentials, using an absolute `storeFile` path:
 
+```properties
+storeFile=/absolute/path/to/existing-upload-key.jks
+storePassword=YOUR_LOCAL_SECRET
+keyAlias=YOUR_EXISTING_ALIAS
+keyPassword=YOUR_LOCAL_SECRET
+```
+
+The Android manifest excludes the unused camera dependency’s microphone permission.
+Normal Android release builds fail if signing configuration is absent. For an
+explicit **unsigned compilation check only**, use:
+
+```sh
+ORG_GRADLE_PROJECT_allowUnsignedRelease=true flutter build appbundle --release
+```
+
+This does not produce a verified, signed production update. Do not distribute it.
+Use the real signing configuration and verified version overrides for release.
+
+## Automatic closed-testing delivery
+
+The [Android closed-testing workflow](../../.github/workflows/android-closed-testing.yml)
+checks the Flutter app and publishes signed AABs to Play's `alpha` track on every
+`master` push; the signed APK is also saved as an Actions artifact. Follow the
+[one-time setup](../../.github/workflows/ANDROID_CLOSED_TESTING.md) for signing and Play
+service-account secrets. No production track is targeted.

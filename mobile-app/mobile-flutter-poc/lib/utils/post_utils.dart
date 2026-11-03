@@ -1,56 +1,46 @@
+import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
-import 'date_utils.dart' as app_date_utils;
+import 'date_utils.dart';
+
+class ImageUploadFailure implements Exception {
+  final String objectUrl;
+  const ImageUploadFailure(this.objectUrl);
+  @override
+  String toString() => 'Photo upload failed. Retry or discard this draft.';
+}
 
 class PostUtils {
   static String getUserEmailPath(String email) {
+    if (email.trim().isEmpty) {
+      throw ArgumentError('A signed-in email is required');
+    }
     return email.replaceAll('.', ',');
   }
 
-  static String formatDateForPath(DateTime date) {
-    return app_date_utils.AppDateUtils.formatDate(date, format: 'dd-MM-yyyy');
-  }
-
-  static DatabaseReference getPostsRef(String userId) {
-    final emailPath = getUserEmailPath(userId);
-    return FirebaseDatabase.instance.ref('posts/$emailPath');
-  }
-
-  static DatabaseReference getPostRef(String userId, String date, String postId) {
-    final emailPath = getUserEmailPath(userId);
-    return FirebaseDatabase.instance.ref('posts/$emailPath/$date/$postId');
-  }
-
-  static DatabaseReference getDatePostsRef(String userId, String date) {
-    final emailPath = getUserEmailPath(userId);
-    return FirebaseDatabase.instance.ref('posts/$emailPath/$date');
-  }
-
-  static Future<String> uploadImage(File imageFile) async {
-    final randomId = DateTime.now().millisecondsSinceEpoch.toString() +
-        (1000 + (9999 - 1000) * (DateTime.now().millisecondsSinceEpoch % 1000)).toString();
-    final imageRef = FirebaseStorage.instance.ref('photos/$randomId');
-    
-    await imageRef.putFile(imageFile);
-    final downloadURL = await imageRef.getDownloadURL();
-    
-    return downloadURL;
-  }
-
-  static Future<void> deleteImage(String photoUrl) async {
+  static String formatDateForPath(DateTime date) =>
+      AppDateUtils.formatDate(date);
+  static DatabaseReference getPostsRef(String email) =>
+      FirebaseDatabase.instance.ref('posts/${getUserEmailPath(email)}');
+  static DatabaseReference getPostRef(
+          String email, String dateKey, String postId) =>
+      getPostsRef(email).child(dateKey).child(postId);
+  static Future<String> uploadImage(File file, String objectId) async {
+    final ref = FirebaseStorage.instance.ref('photos/$objectId');
     try {
-      final url = Uri.parse(photoUrl);
-      final pathMatch = RegExp(r'/o/(.+?)(\?|$)').firstMatch(url.path);
-      if (pathMatch != null) {
-        final decodedPath = Uri.decodeComponent(pathMatch.group(1)!);
-        final imageRef = FirebaseStorage.instance.ref(decodedPath);
-        await imageRef.delete();
-      }
-    } catch (e) {
-      print('Error deleting image: $e');
-      // Don't throw - image deletion failure shouldn't prevent post deletion
+      await ref.putFile(file);
+      return await ref.getDownloadURL();
+    } catch (_) {
+      // Even if fetching the download URL fails, the object may already exist.
+      throw ImageUploadFailure('gs://${ref.bucket}/${ref.fullPath}');
+    }
+  }
+
+  static Future<void> deleteImage(String url) async {
+    try {
+      await FirebaseStorage.instance.refFromURL(url).delete();
+    } on FirebaseException catch (error) {
+      if (error.code != 'object-not-found') rethrow;
     }
   }
 }
-

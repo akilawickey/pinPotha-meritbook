@@ -83,3 +83,7 @@ app.*.map.json
 # Firebase
 **/ios/Runner/GoogleService-Info.plist
 
+
+# Python CI helpers
+__pycache__/
+*.pyc
