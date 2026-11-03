@@ -1,0 +1,148 @@
+name: Android closed testing
+run-name: Android alpha · ${{ github.sha }}
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'mobile-app/mobile-flutter-poc/**'
+      - '.github/workflows/android-closed-testing.yml'
+
+permissions:
+  contents: read
+
+# Serialize the whole pipeline so version allocation and Play upload stay together.
+# queue:max retains up to 100 pending pushes instead of replacing the pending run.
+concurrency:
+  group: pinpotha-android-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'closed-testing' }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  checks:
+    name: Flutter and pipeline checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mobile-app/mobile-flutter-poc
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: '3.35.6'
+          cache: true
+      - name: Test pipeline helpers
+        run: python3 -m unittest discover -s tool/tests -v
+      - name: Resolve locked dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Analyze
+        run: flutter analyze --no-pub
+      - name: Test
+        run: flutter test --no-pub --reporter expanded
+
+  release:
+    name: Publish signed Android build to closed testing
+    needs: checks
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: play-closed-testing
+    defaults:
+      run:
+        working-directory: mobile-app/mobile-flutter-poc
+    env:
+      GOOGLE_PLAY_CLOSED_TRACK: ${{ vars.GOOGLE_PLAY_CLOSED_TRACK || 'alpha' }}
+      ANDROID_VERSION_NAME: ${{ vars.ANDROID_VERSION_NAME }}
+      ANDROID_VERSION_CODE_FLOOR: ${{ vars.ANDROID_VERSION_CODE_FLOOR }}
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Prepare release signing and validate configuration
+        id: config
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: python3 tool/ci_android.py prepare
+      - name: Set up Java
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          channel: stable
+          flutter-version: '3.35.6'
+          cache: true
+      - name: Install Play API authentication helper
+        run: |
+          python3 -m venv "$RUNNER_TEMP/pinpotha-play-api"
+          "$RUNNER_TEMP/pinpotha-play-api/bin/pip" install --disable-pip-version-check 'google-auth[requests]==2.43.0'
+      - name: Select next unused Play version code
+        id: version
+        env:
+          GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          VERSION_CODE_FLOOR: ${{ steps.config.outputs.version_floor }}
+        run: '"$RUNNER_TEMP/pinpotha-play-api/bin/python" tool/ci_android.py version'
+      - name: Resolve locked dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Size Gradle for the hosted runner
+        run: |
+          printf '%s\n' \
+            'org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G -XX:ReservedCodeCacheSize=256m' \
+            'org.gradle.workers.max=2' >> android/gradle.properties
+      - name: Build signed APK and app bundle
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.version_code }}
+          VERSION_NAME: ${{ steps.config.outputs.version_name }}
+        run: |
+          flutter build apk --release --no-pub --build-name "$VERSION_NAME" --build-number "$VERSION_CODE"
+          flutter build appbundle --release --no-pub --build-name "$VERSION_NAME" --build-number "$VERSION_CODE"
+      - name: Save signed artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pinpotha-android-${{ steps.version.outputs.version_code }}
+          path: |
+            mobile-app/mobile-flutter-poc/build/app/outputs/flutter-apk/app-release.apk
+            mobile-app/mobile-flutter-poc/build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish app bundle to closed testing
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: asak.pro.pinPotha
+          releaseFiles: mobile-app/mobile-flutter-poc/build/app/outputs/bundle/release/app-release.aab
+          track: ${{ steps.config.outputs.track }}
+          status: completed
+          releaseName: PinPotha ${{ steps.config.outputs.version_name }} (${{ steps.version.outputs.version_code }})
+      - name: Summarize release
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.version_code }}
+          VERSION_NAME: ${{ steps.config.outputs.version_name }}
+          PLAY_TRACK: ${{ steps.config.outputs.track }}
+        run: |
+          {
+            echo '### PinPotha closed-testing release'
+            echo "- Version: $VERSION_NAME ($VERSION_CODE)"
+            echo "- Track: $PLAY_TRACK"
+            echo '- Package: asak.pro.pinPotha'
+            echo '- Signed APK and AAB are available in this run’s artifacts.'
+            echo '- Play review and tester enrollment still control availability.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove temporary signing files
+        if: always()
+        run: python3 tool/ci_android.py cleanup

@@ -4,42 +4,26 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'screens/splash_screen.dart';
+import 'services/post_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase, handling the case where it might already be initialized
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    // If Firebase is already initialized (duplicate-app error), that's fine
-    // This can happen during hot reload or if native code auto-initializes it
-    final errorString = e.toString().toLowerCase();
-    if (errorString.contains('duplicate-app') || 
-        errorString.contains('already exists') ||
-        errorString.contains('[core/duplicate-app]')) {
-      // App already exists, continue normally
-      debugPrint('Firebase already initialized, continuing...');
-    } else {
-      // Some other error occurred, rethrow it
-      debugPrint('Firebase initialization error: $e');
-      rethrow;
-    }
-  }
-  
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const PinPothaApp());
 }
 
 class PinPothaApp extends StatelessWidget {
-  const PinPothaApp({super.key});
+  final AuthProvider Function()? authFactory;
+  final PostRepository? repository;
+  const PinPothaApp({super.key, this.authFactory, this.repository});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(
+            create: (_) => authFactory?.call() ?? AuthProvider()),
       ],
       child: MaterialApp(
         title: 'PinPotha',
@@ -75,9 +59,8 @@ class PinPothaApp extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
         ),
-        home: const SplashScreen(),
+        home: SplashScreen(repository: repository),
       ),
     );
   }
 }
-

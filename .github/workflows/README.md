@@ -76,3 +76,11 @@ Check the workflow status in:
 - ⚠️ If the key is compromised, regenerate it immediately in Firebase Console
 - ✅ Using GitHub Secrets is the secure way to store this sensitive data
 
+
+## Android closed testing
+
+[`android-closed-testing.yml`](android-closed-testing.yml) builds the Flutter Android
+app on every `master` push and sends its signed app bundle to the `alpha` closed
+track. Signed APK/AAB files are retained as run artifacts. See
+[Android closed-testing setup](ANDROID_CLOSED_TESTING.md) for the five required
+secrets, version allocation, tester access and first-run checks.
